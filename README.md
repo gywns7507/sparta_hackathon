@@ -49,6 +49,17 @@
 - `topic_category` 가중치가 통계적으로 무근거임을 ANOVA로 확인 → 서브점수에서 제외하고 리포트 전체를 재계산
 - 소표본(n<5) 지역 신호로 "이미 최적인 조건을 바꾸라"고 제안하는 노이즈 발생 → 억제 로직 추가
 
+### `pipeline.py`는 이전 단계 스크립트를 어떻게 통합·수정했나
+
+`scripts/pipeline.py`는 새로 설계한 게 아니라, `/analyze`→`/insight`→`/generate` 단계에서 나온 규칙을 그대로 가져오되, 그 이후 통계 검증과 극단값(더미 데이터) 테스트에서 드러난 문제를 고쳐 하나의 재사용 가능한 함수로 통합한 결과물입니다.
+
+- **`analyze.py`가 준 것 — 그대로 재사용**: 중복 제거 기준(`content_id` 기준 69건 정제)과 `has_emoji` dtype 처리 방식이 `pipeline.py`의 `load_clean()`에 그대로 들어감. posting_hour·has_emoji·type×channel별 CTR 분포는 이후 개선 제안 로직(`time_candidate`/`emoji_candidate`/`format_candidate`)이 어떤 축을 봐야 하는지 정하는 근거가 됨.
+- **`insight.py`가 확정한 유사도 기준 — 가중치 1곳 수정**: `insight.py`는 서브점수를 `topic_category`(+1) / `posting_hour`(+2) / `has_emoji`(+1)로 설계했는데, 이후 ANOVA로 `topic_category`가 CTR과 통계적으로 무관함(η²=0.006)이 드러나 `pipeline.py`의 `WEIGHTS = {"posting_hour": 2, "topic_category": 0, "has_emoji": 1}`에서 `topic_category`만 0으로 낮춤. (`insight.py`·`generate.py`는 검증 이전 시점의 원래 값을 그대로 보존한 스냅샷이라 의도적으로 수정하지 않음)
+- **`generate.py`(3단계 초안)의 완화 정책 — 버그 수정**: `generate.py`는 앵커 후보가 3건 미만이면 `channel`→`type` 순서로 계속 완화해 최후엔 전체 데이터(`type`도 무시)까지 썼는데, 더미 데이터 스트레스 테스트 중 이 방식이 블로그와 숏폼처럼 서로 다른 포맷을 섞어 비교하는 버그로 이어짐을 발견. `pipeline.py`의 `similarity_top3()`는 `type`은 원칙적으로 완화하지 않도록 고치고, `channel`만 완화하며, 정말 그 `type`이 과거 데이터에 전혀 없을 때만 최후 수단으로 전체 데이터를 참고하되 신뢰도를 "매우 낮음"으로 명시하게 함.
+- **`generate.py`의 하드코딩된 출력 — 일반 함수로 승격**: `generate.py`는 신규 5건에 맞춰 고정한 5개 type/channel 조합의 posting_hour·has_emoji 매트릭스를 콘솔에 출력만 했는데(사람이 읽고 직접 제안 문구를 씀), `pipeline.py`는 이를 `time_candidate`/`emoji_candidate`/`format_candidate`(근거 강함)와 `topic_candidate`/`length_candidate`(근거 약함)로 함수화해서, 어떤 `new_content_info.csv`가 들어와도 자동으로 후보를 만들고 `pick_suggestions()`가 신뢰도·효과크기 순으로 2개를 골라내도록 일반화함.
+- **새로 추가한 안전장치**: 전체 데이터 기준 이미 최적인 시간대·이모지 조건인데, 표본이 작은(n<5) 앵커 안에서만 우연히 역전되는 경우 "이미 최선인데 바꾸라"고 제안하는 노이즈를 억제하는 조건을 `time_candidate`/`emoji_candidate`에 추가(이전 세 스크립트엔 없던 로직).
+- **Standard/Challenge 요구사항 반영**: `--new`/`--out` CLI 인자로 다른 입력에도 동일 절차를 그대로 재현할 수 있게 만들고(Standard 재현성), 이전 세 스크립트엔 없던 팀 차원 전략 후보 자동 탐지(`detect_strategic_candidates`)와 임팩트×실행용이도 우선순위 채점을 신규로 추가(Challenge).
+
 ## 4. 폴더/파일 구조
 
 ```
