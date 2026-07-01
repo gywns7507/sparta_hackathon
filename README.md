@@ -1,7 +1,11 @@
 # AX 해커톤 — [10] 마케팅 공통: 콘텐츠 성과 예측기
 
+> **🔗 웹 대시보드 바로 보기: https://spartahackathon-hk968rlpf6smau7aewypxy.streamlit.app/**
+> 최종 통합 리포트(`sample-final.html`)를 Streamlit으로 배포한 버전입니다.
+
 > **모든 작업물은 [`[10] 마케팅 공통/`](./%5B10%5D%20%EB%A7%88%EC%BC%80%ED%8C%85%20%EA%B3%B5%ED%86%B5/) 폴더 안에 있습니다.**
 > 이 README는 저장소 루트 안내용이며, 실제 코드·데이터·리포트를 보려면 반드시 위 폴더로 들어가야 합니다.
+> (단, Streamlit 배포용 `streamlit_app.py`·`requirements.txt`는 배포 환경 제약으로 저장소 루트에 있습니다 — 아래 4·5절 참고)
 
 ---
 
@@ -48,13 +52,21 @@
 ## 4. 폴더/파일 구조
 
 ```
+(저장소 루트)
+├── streamlit_app.py             # ★ HTML 대시보드(sample-final.html) 배포용 Streamlit 앱
+├── requirements.txt             # Streamlit 앱 전용 최소 의존성 (streamlit만 포함)
+└── [10] 마케팅 공통/             # 아래 참고 — 실제 과제 코드·데이터·리포트는 전부 이 안에 있음
+```
+
+> `streamlit_app.py`·`requirements.txt`가 저장소 루트에 있는 이유: Streamlit Community Cloud의 의존성 설치 로직이 `[10] 마케팅 공통`처럼 대괄호·공백이 섞인 폴더명을 제대로 못 읽는 문제가 있어(패키지명으로 오인) 배포 진입점만 특수문자 없는 루트로 뺐습니다. `output/sample-final.html` 경로는 코드 안에서 문자열로 참조하므로 폴더 안에 그대로 둬도 문제없습니다. 또한 이 최소 `requirements.txt`는 미션 폴더의 `requirements.txt`(pandas 등 데이터 분석용, `pandas==3.0.3`)와 의도적으로 분리했습니다 — 함께 두면 streamlit이 요구하는 `pandas<3`과 충돌해 배포가 실패합니다.
+
+```
 [10] 마케팅 공통/
 ├── problem.md                  # 과제 원문 (문제 정의·미션·채점 기준)
 ├── CLAUDE.md                   # Claude Code용 작업 진행 가이드
 ├── design-conversation.md      # (참고) 과제 설계자의 문제 설계 배경 기록
 ├── decisions.md                # ★ 전 과정 의사결정 로그 — 판단 근거를 확인하려면 여기
-├── streamlit_app.py             # ★ HTML 대시보드(sample-final.html) 배포용 Streamlit 앱
-├── requirements.txt             # 실행 의존성 (pandas·numpy·scipy·streamlit 등)
+├── requirements.txt             # 데이터 분석 파이프라인 실행 의존성 (pandas·numpy·scipy 등)
 │
 ├── .claude/skills/              # 커스텀 슬래시 명령 정의
 │   ├── analyze.md               #   /analyze  — 데이터 파악
@@ -95,13 +107,16 @@
 
 가장 빠르게 확인하려면 아래 순서를 권장합니다.
 
-1. **웹 대시보드로 보기 (Streamlit 배포)**
+1. **웹 대시보드로 보기 (배포된 Streamlit 앱)**
+
+   👉 **https://spartahackathon-hk968rlpf6smau7aewypxy.streamlit.app/**
+
+   로컬에서 직접 띄워보려면:
    ```bash
-   cd "[10] 마케팅 공통"
    pip install -r requirements.txt
    streamlit run streamlit_app.py
    ```
-   [`streamlit_app.py`](<./[10] 마케팅 공통/streamlit_app.py>)가 `output/sample-final.html`을 그대로 불러와 브라우저 대시보드로 띄웁니다. 로컬 확인용이며, Streamlit Community Cloud 등에 그대로 배포해 URL로 공유할 수도 있습니다(레포지토리·`streamlit_app.py` 경로·`requirements.txt`만 지정하면 됨).
+   (저장소 **루트**에서 실행 — [`streamlit_app.py`](./streamlit_app.py)와 [`requirements.txt`](./requirements.txt)가 루트에 있는 이유는 4절 참고). `streamlit_app.py`가 `[10] 마케팅 공통/output/sample-final.html`을 그대로 불러와 브라우저 대시보드로 띄웁니다.
 
 2. **파일만 빠르게 보기 (배포 없이)**
    - [`output/sample-final.html`](<./[10] 마케팅 공통/output/sample-final.html>)을 브라우저로 직접 열기 — 진단 결과·비교표·전략 기획안을 시각화한 최종 통합 리포트
