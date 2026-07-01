@@ -53,6 +53,8 @@
 ├── CLAUDE.md                   # Claude Code용 작업 진행 가이드
 ├── design-conversation.md      # (참고) 과제 설계자의 문제 설계 배경 기록
 ├── decisions.md                # ★ 전 과정 의사결정 로그 — 판단 근거를 확인하려면 여기
+├── streamlit_app.py             # ★ HTML 대시보드(sample-final.html) 배포용 Streamlit 앱
+├── requirements.txt             # 실행 의존성 (pandas·numpy·scipy·streamlit 등)
 │
 ├── .claude/skills/              # 커스텀 슬래시 명령 정의
 │   ├── analyze.md               #   /analyze  — 데이터 파악
@@ -93,14 +95,22 @@
 
 가장 빠르게 확인하려면 아래 순서를 권장합니다.
 
-1. **결과물만 빠르게 보기**
-   - [`output/sample-final.html`](<./[10] 마케팅 공통/output/sample-final.html>)을 브라우저로 열기 — 진단 결과·비교표·전략 기획안을 시각화한 최종 통합 리포트
+1. **웹 대시보드로 보기 (Streamlit 배포)**
+   ```bash
+   cd "[10] 마케팅 공통"
+   pip install -r requirements.txt
+   streamlit run streamlit_app.py
+   ```
+   [`streamlit_app.py`](<./[10] 마케팅 공통/streamlit_app.py>)가 `output/sample-final.html`을 그대로 불러와 브라우저 대시보드로 띄웁니다. 로컬 확인용이며, Streamlit Community Cloud 등에 그대로 배포해 URL로 공유할 수도 있습니다(레포지토리·`streamlit_app.py` 경로·`requirements.txt`만 지정하면 됨).
+
+2. **파일만 빠르게 보기 (배포 없이)**
+   - [`output/sample-final.html`](<./[10] 마케팅 공통/output/sample-final.html>)을 브라우저로 직접 열기 — 진단 결과·비교표·전략 기획안을 시각화한 최종 통합 리포트
    - 텍스트로 보려면 [`output/content_prediction_report.md`](<./[10] 마케팅 공통/output/content_prediction_report.md>) 확인 (제출 기준 최종 리포트, Basic 필수 항목 + Standard 파이프라인 설명 + Challenge 전략 기획안 포함)
 
-2. **판단 근거를 확인하고 싶다면**
+3. **판단 근거를 확인하고 싶다면**
    - [`decisions.md`](<./[10] 마케팅 공통/decisions.md>)에서 유사도 기준, 결측·중복 처리, 통계 검증(ANOVA·t-test), 버그 수정 이력을 시간순으로 확인
 
-3. **직접 재현해보고 싶다면** (Python 3 + `pip install -r requirements.txt` 필요)
+4. **파이프라인을 직접 재현해보고 싶다면** (Python 3 + `pip install -r requirements.txt` 필요)
    ```bash
    cd "[10] 마케팅 공통"
    pip install -r requirements.txt
