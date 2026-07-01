@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>콘텐츠 성과 예측 리포트 — 최종 통합</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif; background: #f4f5f7; color: #1a1a2e; line-height: 1.6; }
+.container { max-width: 1080px; margin: 0 auto; padding: 40px 24px; }
+
+.header { background: #fff; border-radius: 12px; padding: 32px 36px; margin-bottom: 24px; border-left: 5px solid #7048e8; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+.level-badges { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+.level-badge { display: inline-block; color: white; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 20px; letter-spacing: .5px; }
+.lb-basic { background: #2d6a4f; }
+.lb-standard { background: #e76f51; }
+.lb-challenge { background: #e63946; }
+.header h1 { font-size: 22px; font-weight: 700; margin-bottom: 10px; }
+.header-meta { font-size: 13px; color: #6c757d; display: flex; flex-wrap: wrap; gap: 16px; }
+.header-meta .verify { color: #2b8a3e; font-weight: 600; }
+
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+.stat { background: #fff; border-radius: 10px; padding: 18px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,.06); border-top: 4px solid; }
+.stat-n { font-size: 30px; font-weight: 800; }
+.stat-label { font-size: 12px; color: #666; margin-top: 2px; }
+.stat-sub { font-size: 11px; color: #999; margin-top: 4px; }
+.c-purple { border-color: #7048e8; color: #7048e8; }
+.c-blue { border-color: #4361ee; color: #4361ee; }
+.c-green { border-color: #2d6a4f; color: #2d6a4f; }
+.c-orange { border-color: #e8590c; color: #e8590c; }
+
+.section { background: #fff; border-radius: 12px; padding: 28px 32px; margin-bottom: 24px; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+.section.lvl-basic { border-top: 4px solid #2d6a4f; }
+.section.lvl-standard { border-top: 4px solid #e76f51; }
+.section.lvl-challenge { border-top: 4px solid #e63946; }
+.section-title { font-size: 15px; font-weight: 700; padding-bottom: 14px; margin-bottom: 20px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 8px; }
+.section-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; padding: 2px 8px; border-radius: 10px; color: white; }
+.tag-basic { background: #2d6a4f; }
+.tag-standard { background: #e76f51; }
+.tag-challenge { background: #e63946; }
+.note { font-size: 12px; color: #888; margin-bottom: 12px; }
+
+/* New content card */
+.nc-card { border: 1px solid #ececf3; border-radius: 12px; margin-bottom: 22px; overflow: hidden; }
+.nc-head { background: #faf8ff; padding: 18px 22px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+.nc-num { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #7048e8; margin-bottom: 5px; }
+.nc-title { font-size: 16px; font-weight: 800; margin-bottom: 8px; }
+.nc-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag { font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 12px; background: #eef0f5; color: #555; }
+.tag.emoji { background: #fff3bf; color: #856404; }
+.weak-badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 6px; background: #ffe3e3; color: #c92a2a; white-space: nowrap; }
+.nc-body { padding: 20px 22px; }
+
+/* CTR gauge */
+.gauge-wrap { display: flex; align-items: center; gap: 18px; margin-bottom: 6px; flex-wrap: wrap; }
+.gauge-label { font-size: 12px; color: #888; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
+.gauge-range { font-size: 28px; font-weight: 900; color: #7048e8; }
+.gauge-range.weak { color: #c92a2a; }
+.gauge-track { flex: 1; min-width: 200px; background: #f0f2f5; border-radius: 8px; height: 26px; position: relative; overflow: hidden; }
+.gauge-fill { position: absolute; top: 0; height: 100%; background: linear-gradient(90deg,#9775fa,#7048e8); border-radius: 8px; }
+.gauge-fill.weak { background: linear-gradient(90deg,#ffa8a8,#e03131); }
+.gauge-scale { display: flex; justify-content: space-between; font-size: 10px; color: #aaa; margin-top: 3px; margin-bottom: 14px; }
+.gauge-basis { font-size: 12px; color: #666; margin-bottom: 16px; }
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th { background: #f8f9fa; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #6c757d; padding: 9px 12px; text-align: left; border-bottom: 2px solid #e9ecef; white-space: nowrap; }
+tbody td { padding: 9px 12px; border-bottom: 1px solid #f0f2f5; vertical-align: middle; }
+.ctr-hi { font-weight: 800; color: #2d6a4f; }
+.ctr-mid { font-weight: 700; color: #e8590c; }
+.ctr-lo { font-weight: 700; color: #e03131; }
+.rank { font-weight: 800; color: #7048e8; }
+.range-cell { font-weight: 800; }
+.r-hi { color: #2d6a4f; }
+.r-mid { color: #e8590c; }
+.r-lo { color: #e03131; }
+
+.simbar-track { background: #eef0f5; border-radius: 4px; height: 10px; width: 90px; display: inline-block; vertical-align: middle; overflow: hidden; }
+.simbar-fill { height: 100%; background: #7048e8; border-radius: 4px; }
+.simbar-fill.weak { background: #e03131; }
+
+.score-gauge { display: inline-flex; gap: 3px; vertical-align: middle; margin-right: 6px; }
+.score-dot { width: 15px; height: 15px; border-radius: 4px; background: #e9ecef; }
+.score-dot.c-score-3 { background: #2b8a3e; }
+.score-dot.c-score-2 { background: #e8590c; }
+.score-dot.c-score-1 { background: #e03131; }
+.score-text { font-size: 12px; color: #666; font-weight: 700; vertical-align: middle; }
+.verdict { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
+.v-keep { background: #d3f9d8; color: #2b8a3e; }
+.v-tune { background: #fff3bf; color: #856404; }
+.v-fix { background: #ffe3e3; color: #c92a2a; }
+
+.tip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+.tip { background: #f8f9fa; border-left: 3px solid #4361ee; border-radius: 0 8px 8px 0; padding: 12px 14px; }
+.tip-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #4361ee; margin-bottom: 4px; }
+.tip-body { font-size: 12.5px; color: #333; line-height: 1.55; }
+.tip-body b { color: #1a1a2e; }
+
+.dec-table td { font-size: 12.5px; vertical-align: top; }
+.dec-table td:first-child { font-weight: 600; white-space: nowrap; color: #444; }
+
+/* pipeline (standard) */
+.pipeline { display: flex; align-items: center; gap: 0; flex-wrap: wrap; margin-bottom: 20px; }
+.pipe-step { background: #f0f4ff; border: 2px solid #4361ee; border-radius: 8px; padding: 12px 16px; text-align: center; min-width: 116px; }
+.pipe-step .cmd { font-size: 13px; font-weight: 800; color: #4361ee; font-family: monospace; }
+.pipe-step .desc { font-size: 11px; color: #555; margin-top: 4px; }
+.pipe-arrow { font-size: 20px; color: #adb5bd; padding: 0 8px; }
+.pipe-step.input { background: #fff8e1; border-color: #f4a261; }
+.pipe-step.input .cmd { color: #e76f51; }
+.pipe-step.output { background: #f3effe; border-color: #7048e8; }
+.pipe-step.output .cmd { color: #7048e8; }
+.pipe-step.exec { background: #eafbf0; border-color: #2b8a3e; padding: 12px 22px; }
+.pipe-step.exec .cmd { color: #2b8a3e; font-size: 14px; }
+
+.pipe-internal { margin: -6px 0 20px 0; }
+.pipe-internal-label { font-size: 11.5px; color: #999; margin-bottom: 8px; margin-left: 4px; }
+.pipe-substeps { display: flex; align-items: center; gap: 0; flex-wrap: wrap; background: #f8f9fa; border-radius: 8px; padding: 12px 16px; }
+.pipe-sub { font-size: 11.5px; font-weight: 700; color: #444; text-align: center; padding: 6px 10px; }
+.pipe-sub span { display: block; font-size: 10.5px; font-weight: 500; color: #999; margin-top: 3px; }
+.pipe-sub-arrow { font-size: 14px; color: #ccc; padding: 0 4px; }
+
+.usage-box { background: #1e1e2e; border-radius: 8px; padding: 16px 20px; font-family: monospace; font-size: 13px; color: #a6e3a1; margin-bottom: 16px; line-height: 1.8; overflow-x: auto; }
+.usage-box .comment { color: #6c7086; }
+.usage-box .cmd { color: #89b4fa; }
+
+.verify-box { background: #ebfbee; border: 1px solid #b2f2bb; border-radius: 8px; padding: 14px 18px; font-size: 12.5px; color: #2b8a3e; margin-bottom: 16px; }
+.verify-box strong { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
+
+.design-note { background: #fff8f0; border-left: 3px solid #e76f51; border-radius: 0 8px 8px 0; padding: 14px 18px; font-size: 13px; color: #444; margin-bottom: 16px; }
+.design-note strong { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: #888; margin-bottom: 4px; }
+.design-note code { background: #fff0e6; padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+
+/* challenge proposals */
+.priority-note { background: #f8f9fa; border-left: 3px solid #e63946; border-radius: 0 8px 8px 0; padding: 14px 18px; font-size: 13px; color: #444; margin-bottom: 20px; }
+.priority-note strong { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: #888; margin-bottom: 4px; }
+
+.score-legend { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 8px; }
+.score-legend-title { font-size: 11.5px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; }
+.legend-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.legend-table td { padding: 6px 8px; border-bottom: 1px solid #f1f1f1; vertical-align: middle; color: #333; }
+.legend-table td:first-child { width: 34px; padding-right: 0; }
+.legend-score { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; color: white; font-weight: 800; font-size: 12.5px; }
+.legend-score.s5 { background: #2b8a3e; }
+.legend-score.s4 { background: #74b816; }
+.legend-score.s3 { background: #f4a261; }
+.legend-score.s2 { background: #e8590c; }
+.legend-score.s1 { background: #e03131; }
+.legend-footnote { font-size: 11.5px; color: #999; margin-bottom: 20px; }
+
+.proposal { border-radius: 12px; border: 1px solid #e9ecef; margin-bottom: 20px; overflow: hidden; }
+.proposal-header { padding: 20px 24px; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.proposal-meta { flex: 1; }
+.proposal-num { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 6px; }
+.proposal-title { font-size: 16px; font-weight: 800; margin-bottom: 6px; }
+.proposal-sub { font-size: 13px; color: #666; }
+.priority-badge { display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 10px; padding: 10px 18px; min-width: 90px; text-align: center; }
+.priority-badge .pb-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 2px; }
+.priority-badge .pb-score { font-size: 22px; font-weight: 900; }
+.pb-p0 { background: #ffe0e3; color: #c9323e; }
+.pb-p1 { background: #fff3cd; color: #856404; }
+
+.proposal-body { padding: 0 24px 24px; display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 1fr; gap: 14px; }
+.prop-section { background: #f8f9fa; border-radius: 8px; padding: 16px; display: flex; flex-direction: column; min-height: 190px; }
+.prop-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #888; margin-bottom: 8px; }
+.prop-section-body { font-size: 13px; color: #333; line-height: 1.6; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+
+.score-breakdown { display: flex; flex-direction: column; gap: 6px; }
+.score-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+.score-label { display: inline-block; width: 92px; flex-shrink: 0; white-space: nowrap; }
+.score-bar-track { background: #e9ecef; border-radius: 3px; height: 8px; flex: 1; margin: 0 10px; }
+.score-bar-fill { height: 100%; border-radius: 3px; background: #4361ee; }
+.score-val { font-weight: 700; font-size: 13px; color: #333; min-width: 40px; text-align: right; }
+
+.deprioritized { background: #f8f9fa; border-radius: 8px; padding: 14px 18px; font-size: 12.5px; color: #555; margin-top: 8px; }
+.deprioritized b { color: #333; }
+
+@media(max-width:700px) {
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .tip-grid { grid-template-columns: 1fr; }
+  .pipeline { flex-direction: column; }
+  .proposal-body { grid-template-columns: 1fr; }
+  .score-legend { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <div class="level-badges">
+    <span class="level-badge lb-basic">🟢 Basic 100</span>
+    <span class="level-badge lb-standard">🟡 Standard +30</span>
+    <span class="level-badge lb-challenge">🔴 Challenge +30</span>
+  </div>
+  <h1>콘텐츠 성과 예측 리포트 — 최종 통합판</h1>
+  <div class="header-meta">
+    <span>📊 학습: past_content_performance.csv <strong>70건 → 중복 제거 69건</strong></span>
+    <span>🎯 예측 대상: 신규 5건</span>
+    <span class="verify">✅ 파이프라인 재현성 검증 완료 (3종 입력, 바이트 단위 일치)</span>
+    <span>📆 2026-07-01</span>
+  </div>
+</div>
+
+<div class="stats-row">
+  <div class="stat c-purple"><div class="stat-n">69</div><div class="stat-label">학습 콘텐츠</div><div class="stat-sub">중복 C003 제거</div></div>
+  <div class="stat c-blue"><div class="stat-n">5</div><div class="stat-label">진단 대상</div><div class="stat-sub">신규 콘텐츠</div></div>
+  <div class="stat c-green"><div class="stat-n">+1.48%p</div><div class="stat-label">저녁 발행 효과</div><div class="stat-sub">20시(4.36%) vs 8시(2.88%)</div></div>
+  <div class="stat c-orange"><div class="stat-n">+1.06%p</div><div class="stat-label">이모지 효과</div><div class="stat-sub">포함(4.01%) vs 미포함(2.95%)</div></div>
+</div>
+
+<!-- ================= BASIC ================= -->
+<div class="section lvl-basic">
+  <div class="section-title"><span class="section-tag tag-basic">Basic</span> 🔎 데이터에서 찾은 핵심 성과 패턴</div>
+  <p class="note">⚠️ 완전 중복 C003 제거(69건 기준) · 결측 C069(engagement_rate)·C070(reach)는 해당 지표만 비교 제외 · has_emoji는 pandas가 자동으로 bool 타입 인식</p>
+  <div class="tip-grid">
+    <div class="tip"><div class="tip-label">발행 시간대</div><div class="tip-body">20시 평균 CTR 4.36% vs 8시 2.88% — <b>+1.48%p</b>. 5개 유사도 축 중 CTR 효과크기 최대(ANOVA η²=0.48, 유의함).</div></div>
+    <div class="tip"><div class="tip-label">이모지</div><div class="tip-body">has_emoji=True 평균 4.01% vs False 2.95% — <b>+1.06%p</b>(Welch t=6.12, 유의함).</div></div>
+    <div class="tip"><div class="tip-label">유형 × 채널</div><div class="tip-body"><b>숏폼+유튜브</b>(4.38%) 최상 / <b>인포그래픽+유튜브</b>(2.40%) 최하.</div></div>
+    <div class="tip"><div class="tip-label">제목 길이(소셜 30자+)</div><div class="tip-body">과거 데이터에 사례 0건 — <b>검증 불가</b>. 업계 통설로만 참고, 개선 제안 근거로 사용하지 않음.</div></div>
+  </div>
+</div>
+
+<div class="section lvl-basic">
+  <div class="section-title"><span class="section-tag tag-basic">Basic</span> 🎯 신규 콘텐츠 5건 일괄 진단 대시보드</div>
+  <table>
+    <thead><tr><th>#</th><th>제목</th><th>조건</th><th>예상 CTR</th><th>앵커 후보</th><th>서브점수</th><th>판정</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>①</td><td>주니어 마케터 6개월 성장기</td><td>숏폼·커리어·유튜브·20시·이모지O</td>
+        <td class="range-cell r-hi">4.3~5.8%</td><td>13건</td>
+        <td><span class="score-gauge"><span class="score-dot c-score-3"></span><span class="score-dot c-score-3"></span><span class="score-dot c-score-3"></span></span><span class="score-text">3/3</span></td>
+        <td><span class="verdict v-keep">이미 최적 · 유지</span></td>
+      </tr>
+      <tr>
+        <td>②</td><td>노션으로 끝내는 일주일 업무 정리</td><td>카드뉴스·생산성·인스타·18시·이모지O</td>
+        <td class="range-cell r-mid">3.7~4.2%</td><td>22건</td>
+        <td><span class="score-gauge"><span class="score-dot c-score-3"></span><span class="score-dot c-score-3"></span><span class="score-dot c-score-3"></span></span><span class="score-text">3/3</span></td>
+        <td><span class="verdict v-tune">20시/숏폼 검토</span></td>
+      </tr>
+      <tr>
+        <td>③</td><td>2026 디지털 마케팅 트렌드 총정리와…</td><td>블로그·트렌드·블로그·8시·이모지없음</td>
+        <td class="range-cell r-mid">3.3~4.0%</td><td>17건</td>
+        <td><span class="score-gauge"><span class="score-dot c-score-3"></span><span class="score-dot c-score-3"></span><span class="score-dot c-score-3"></span></span><span class="score-text">3/3</span></td>
+        <td><span class="verdict v-tune">12시 조정 검토</span></td>
+      </tr>
+      <tr>
+        <td>④</td><td>수강생 취업 성과 한눈에 보기</td><td>인포그래픽·후기·인스타·18시·이모지O</td>
+        <td class="range-cell r-mid">3.2~3.5%</td><td>6건</td>
+        <td><span class="score-gauge"><span class="score-dot c-score-3"></span><span class="score-dot c-score-3"></span><span class="score-dot c-score-3"></span></span><span class="score-text">3/3</span></td>
+        <td><span class="verdict v-tune">숏폼 전환 검토</span></td>
+      </tr>
+      <tr>
+        <td>⑤</td><td>점심에 보는 AI 트렌드 요약</td><td>숏폼·트렌드·인스타·12시·이모지없음</td>
+        <td class="range-cell r-lo">3.2~4.9%</td><td>8건</td>
+        <td><span class="score-gauge"><span class="score-dot c-score-2"></span><span class="score-dot c-score-2"></span><span class="score-dot"></span></span><span class="score-text">2/3</span></td>
+        <td><span class="verdict v-fix">이모지+20시 (신뢰도 낮음)</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section lvl-basic">
+  <div class="section-title"><span class="section-tag tag-basic">Basic</span> 📋 신규 콘텐츠 개별 진단</div>
+
+  <div class="nc-card">
+    <div class="nc-head">
+      <div>
+        <div class="nc-num">신규 콘텐츠 ①</div>
+        <div class="nc-title">주니어 마케터 6개월 성장기</div>
+        <div class="nc-tags"><span class="tag">숏폼</span><span class="tag">커리어</span><span class="tag">유튜브</span><span class="tag">20시</span><span class="tag emoji">😀 이모지</span></div>
+      </div>
+    </div>
+    <div class="nc-body">
+      <div class="gauge-wrap">
+        <span class="gauge-label">예상 CTR 범위</span>
+        <span class="gauge-range">4.3% ~ 5.8%</span>
+        <div class="gauge-track"><div class="gauge-fill" style="left:61%;width:22%"></div></div>
+      </div>
+      <div class="gauge-scale"><span>0%</span><span>3.5%</span><span>7%</span></div>
+      <div class="gauge-basis">📌 근거: 앵커 후보 13건(type+channel 유지) 중 서브점수 최고 3/3(만점)인 유사 TOP3의 실제 CTR</div>
+      <table>
+        <thead><tr><th>순위</th><th>id</th><th>제목</th><th>CTR</th><th>인게이지먼트율</th><th>유사 이유</th></tr></thead>
+        <tbody>
+          <tr><td class="rank">1</td><td>C001</td><td>퇴근 후 5분 루틴으로 인생 바뀜</td><td class="ctr-hi">5.8%</td><td>9.2%</td><td>서브점수 3/3 (topic 상이)</td></tr>
+          <tr><td class="rank">2</td><td>C002</td><td>주니어 마케터가 3개월 만에 한 일</td><td class="ctr-hi">5.2%</td><td>8.7%</td><td>서브점수 3/3 (5축 전부 일치)</td></tr>
+          <tr><td class="rank">3</td><td>C008</td><td>이직 6개월 차 솔직 후기</td><td class="ctr-mid">4.3%</td><td>8.9%</td><td>서브점수 3/3 (topic 상이)</td></tr>
+        </tbody>
+      </table>
+      <div class="tip-grid">
+        <div class="tip"><div class="tip-label">개선 제안 1 (근거 약함)</div><div class="tip-body">제목 길이를 늘리는 실험: 앵커 내 짧은 그룹 4.08%(n=5) vs 긴 그룹 4.58%(n=8), <b>+0.50%p</b>. 표본 작아 확정적이지 않음.</div></div>
+        <div class="tip"><div class="tip-label">개선 제안 2 (근거 약함)</div><div class="tip-body">주제 앵글을 '생산성'으로: 4.40%(n=3) vs 4.50%(n=4), +0.10%p. topic_category는 통계적으로 CTR과 무관(η²=0.006)해 우선순위 최하.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nc-card">
+    <div class="nc-head">
+      <div>
+        <div class="nc-num">신규 콘텐츠 ②</div>
+        <div class="nc-title">노션으로 끝내는 일주일 업무 정리</div>
+        <div class="nc-tags"><span class="tag">카드뉴스</span><span class="tag">생산성</span><span class="tag">인스타그램</span><span class="tag">18시</span><span class="tag emoji">😀 이모지</span></div>
+      </div>
+    </div>
+    <div class="nc-body">
+      <div class="gauge-wrap">
+        <span class="gauge-label">예상 CTR 범위</span>
+        <span class="gauge-range">3.7% ~ 4.2%</span>
+        <div class="gauge-track"><div class="gauge-fill" style="left:53%;width:7%"></div></div>
+      </div>
+      <div class="gauge-scale"><span>0%</span><span>3.5%</span><span>7%</span></div>
+      <div class="gauge-basis">📌 근거: 앵커 후보 22건 중 서브점수 최고 3/3(만점)인 유사 TOP3의 실제 CTR</div>
+      <table>
+        <thead><tr><th>순위</th><th>id</th><th>제목</th><th>CTR</th><th>인게이지먼트율</th><th>유사 이유</th></tr></thead>
+        <tbody>
+          <tr><td class="rank">1</td><td>C010</td><td>비전공자 개발자 취업 로드맵</td><td class="ctr-hi">4.2%</td><td>6.9%</td><td>서브점수 3/3 (topic 상이)</td></tr>
+          <tr><td class="rank">2</td><td>C012</td><td>갓생 사는 사람들의 아침 루틴</td><td class="ctr-mid">4.0%</td><td>6.5%</td><td>서브점수 3/3 (5축 전부 일치)</td></tr>
+          <tr><td class="rank">3</td><td>C014</td><td>수강생 100명 만족도 후기 모음</td><td class="ctr-mid">3.7%</td><td>7.4%</td><td>서브점수 3/3 (topic 상이)</td></tr>
+        </tbody>
+      </table>
+      <div class="tip-grid">
+        <div class="tip"><div class="tip-label">개선 제안 1</div><div class="tip-body">발행 시간을 20시로 변경: 앵커 내 18시 3.83%(n=11) vs 20시 4.07%(n=6), <b>+0.24%p</b>. 표본 충분해 신뢰할 만함.</div></div>
+        <div class="tip"><div class="tip-label">개선 제안 2</div><div class="tip-body">인스타그램에서 포맷을 숏폼으로 전환 검토: 전체 평균 카드뉴스 3.73% vs 숏폼 4.05%, <b>+0.32%p</b>.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nc-card">
+    <div class="nc-head">
+      <div>
+        <div class="nc-num">신규 콘텐츠 ③</div>
+        <div class="nc-title">2026 디지털 마케팅 트렌드 총정리와 실무 적용 전략 가이드</div>
+        <div class="nc-tags"><span class="tag">블로그</span><span class="tag">트렌드</span><span class="tag">블로그</span><span class="tag">8시</span><span class="tag">이모지 없음</span></div>
+      </div>
+    </div>
+    <div class="nc-body">
+      <div class="gauge-wrap">
+        <span class="gauge-label">예상 CTR 범위</span>
+        <span class="gauge-range">3.3% ~ 4.0%</span>
+        <div class="gauge-track"><div class="gauge-fill" style="left:47%;width:10%"></div></div>
+      </div>
+      <div class="gauge-scale"><span>0%</span><span>3.5%</span><span>7%</span></div>
+      <div class="gauge-basis">📌 근거: 블로그-블로그 앵커 17건 중 서브점수 최고 3/3(만점)인 유사 TOP3의 실제 CTR</div>
+      <table>
+        <thead><tr><th>순위</th><th>id</th><th>제목</th><th>CTR</th><th>인게이지먼트율</th><th>유사 이유</th></tr></thead>
+        <tbody>
+          <tr><td class="rank">1</td><td>C024</td><td>비전공자를 위한 데이터 분석 입문 완벽 가이드</td><td class="ctr-mid">3.6%</td><td>4.2%</td><td>서브점수 3/3 (topic 상이)</td></tr>
+          <tr><td class="rank">2</td><td>C026</td><td>2026년 디지털 마케팅 트렌드 심층 분석 리포트</td><td class="ctr-hi">4.0%</td><td>4.8%</td><td>서브점수 3/3 (5축 전부 일치)</td></tr>
+          <tr><td class="rank">3</td><td>C028</td><td>수강 후기: 3개월간의 부트캠프 완주 솔직 기록</td><td class="ctr-lo">3.3%</td><td>5.5%</td><td>서브점수 3/3 (topic 상이)</td></tr>
+        </tbody>
+      </table>
+      <div class="tip-grid">
+        <div class="tip"><div class="tip-label">개선 제안 1</div><div class="tip-body">발행 시간을 12시로 조정: 블로그 앵커 내 8시 2.84%(n=9) vs 12시 3.16%(n=8), <b>+0.32%p</b>. 블로그 채널 자체 데이터라 신뢰도 있음.</div></div>
+        <div class="tip"><div class="tip-label">개선 제안 2 (앵커 내 검증 부족)</div><div class="tip-body">제목에 이모지 추가(전체 평균 기준): 미포함 2.95% vs 포함 4.01%, +1.06%p. 다만 블로그-블로그 앵커 17건 전부 이모지 미포함이라 이 채널 자체 검증 사례는 없음.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nc-card">
+    <div class="nc-head">
+      <div>
+        <div class="nc-num">신규 콘텐츠 ④</div>
+        <div class="nc-title">수강생 취업 성과 한눈에 보기</div>
+        <div class="nc-tags"><span class="tag">인포그래픽</span><span class="tag">후기</span><span class="tag">인스타그램</span><span class="tag">18시</span><span class="tag emoji">😀 이모지</span></div>
+      </div>
+    </div>
+    <div class="nc-body">
+      <div class="gauge-wrap">
+        <span class="gauge-label">예상 CTR 범위</span>
+        <span class="gauge-range">3.2% ~ 3.5%</span>
+        <div class="gauge-track"><div class="gauge-fill" style="left:46%;width:4%"></div></div>
+      </div>
+      <div class="gauge-scale"><span>0%</span><span>3.5%</span><span>7%</span></div>
+      <div class="gauge-basis">📌 근거: 앵커 후보 6건(가장 후보가 적은 케이스) 중 서브점수 최고 3/3(만점)인 유사 TOP3의 실제 CTR</div>
+      <table>
+        <thead><tr><th>순위</th><th>id</th><th>제목</th><th>CTR</th><th>인게이지먼트율</th><th>유사 이유</th></tr></thead>
+        <tbody>
+          <tr><td class="rank">1</td><td>C036</td><td>한눈에 보는 2026 콘텐츠 마케팅 지표</td><td class="ctr-mid">3.5%</td><td>5.4%</td><td>서브점수 3/3 (topic 상이)</td></tr>
+          <tr><td class="rank">2</td><td>C037</td><td>연봉 인상률 데이터로 보는 직무별 비교</td><td class="ctr-lo">3.2%</td><td>5.0%</td><td>서브점수 3/3 (topic 상이)</td></tr>
+          <tr><td class="rank">3</td><td>C040</td><td>수강생 취업률 성과 인포그래픽</td><td class="ctr-mid">3.3%</td><td>5.6%</td><td>서브점수 3/3 (5축 전부 일치)</td></tr>
+        </tbody>
+      </table>
+      <div class="tip-grid">
+        <div class="tip"><div class="tip-label">개선 제안 1</div><div class="tip-body">인스타그램에서 포맷을 숏폼으로 전환 검토: 전체 평균 인포그래픽 3.25% vs 숏폼 4.05%, <b>+0.80%p</b>. 중간 대안으로 카드뉴스(3.73%, +0.48%p)도 고려 가능.</div></div>
+        <div class="tip"><div class="tip-label">개선 제안 2 (앵커 내 검증 부족)</div><div class="tip-body">발행 시간을 20시로 변경(전체 평균 기준): 18시 3.90% vs 20시 4.36%, +0.46%p. 이 앵커엔 20시 발행 사례가 없어(n=0) 채널 자체 검증은 안 됨.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nc-card">
+    <div class="nc-head">
+      <div>
+        <div class="nc-num">신규 콘텐츠 ⑤</div>
+        <div class="nc-title">점심에 보는 AI 트렌드 요약</div>
+        <div class="nc-tags"><span class="tag">숏폼</span><span class="tag">트렌드</span><span class="tag">인스타그램</span><span class="tag">12시</span><span class="tag">이모지 없음</span></div>
+      </div>
+      <span class="weak-badge">⚠️ 매칭 신뢰도 낮음</span>
+    </div>
+    <div class="nc-body">
+      <div class="gauge-wrap">
+        <span class="gauge-label">예상 CTR 범위</span>
+        <span class="gauge-range weak">3.2% ~ 4.9%</span>
+        <div class="gauge-track"><div class="gauge-fill weak" style="left:46%;width:24%"></div></div>
+      </div>
+      <div class="gauge-scale"><span>0%</span><span>3.5%</span><span>7%</span></div>
+      <div class="gauge-basis">⚠️ 앵커 8건 중 서브점수 만점(3/3) 후보가 0건 — TOP3 중 C003·C005는 서브점수 0/3인데도 CTR이 높아 포함된 참고용 케이스입니다.</div>
+      <table>
+        <thead><tr><th>순위</th><th>id</th><th>제목</th><th>CTR</th><th>인게이지먼트율</th><th>유사 이유</th></tr></thead>
+        <tbody>
+          <tr><td class="rank">1</td><td>C021</td><td>커리어 전환 고민 상담 후기</td><td class="ctr-lo">3.2%</td><td>6.1%</td><td>서브점수 2/3 (posting_hour만 일치)</td></tr>
+          <tr><td class="rank">2</td><td>C003</td><td>이 앱 하나로 일정 관리 끝</td><td class="ctr-hi">4.9%</td><td>8.1%</td><td>서브점수 0/3 (type·channel만 일치)</td></tr>
+          <tr><td class="rank">3</td><td>C005</td><td>합격자가 말하는 포트폴리오 비밀</td><td class="ctr-hi">4.7%</td><td>7.8%</td><td>서브점수 0/3 (type·channel만 일치)</td></tr>
+        </tbody>
+      </table>
+      <div class="tip-grid">
+        <div class="tip"><div class="tip-label">개선 제안 1</div><div class="tip-body">이모지 추가: 전체 평균 미포함 2.95% vs 포함 4.01%, <b>+1.06%p</b>. 숏폼-인스타 앵커 8건 전부 이모지 포함이라 미포함 자체가 이례적입니다.</div></div>
+        <div class="tip"><div class="tip-label">개선 제안 2 (표본 작음, 참고용)</div><div class="tip-body">발행 시간을 20시로 변경: 앵커 내 12시(3.20%, n=1) vs 20시(4.34%, n=5), <b>+1.14%p</b>. n=1은 콘텐츠 1건 값이라 확정적 근거는 아니지만, 전체 데이터의 저녁 효과(+1.48%p)와 방향은 일치.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= STANDARD ================= -->
+<div class="section lvl-standard">
+  <div class="section-title"><span class="section-tag tag-standard">Standard</span> ⚙️ 재현 파이프라인 — scripts/pipeline.py</div>
+  <div class="pipeline">
+    <div class="pipe-step input"><div class="cmd">새 new.csv</div><div class="desc">data/ 폴더에 교체</div></div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step exec"><div class="cmd">py scripts\pipeline.py</div><div class="desc">단 1회 실행 (사람 개입 없음)</div></div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step output"><div class="cmd">report.md</div><div class="desc">제출</div></div>
+  </div>
+  <div class="pipe-internal">
+    <div class="pipe-internal-label">↳ 위 실행 1회 안에서 자동으로 수행되는 내부 단계 (함수 호출, 별도 입력 불필요)</div>
+    <div class="pipe-substeps">
+      <div class="pipe-sub">정제<br><span>중복 C003·결측 C069/C070</span></div>
+      <div class="pipe-sub-arrow">→</div>
+      <div class="pipe-sub">유사 TOP3<br><span>앵커+서브점수 매칭</span></div>
+      <div class="pipe-sub-arrow">→</div>
+      <div class="pipe-sub">CTR 범위·개선제안<br><span>규칙 기반 자동 산출</span></div>
+      <div class="pipe-sub-arrow">→</div>
+      <div class="pipe-sub">리포트 렌더링<br><span>report.md 저장</span></div>
+    </div>
+  </div>
+  <div class="usage-box">
+    <span class="comment"># 새 콘텐츠가 들어올 때마다 — 아래 명령 "한 번"만 실행하면 끝</span><br>
+    <span class="cmd">py scripts\pipeline.py</span> <span class="comment">                      # 기본 5건 재현</span><br>
+    <span class="cmd">py scripts\pipeline.py --new data\new2.csv</span> <span class="comment">   # 다른 신규 CSV로 교체 실행</span><br>
+    <span class="cmd">py scripts\pipeline.py --strategy</span> <span class="comment">          # Challenge 전략 기획안까지 포함</span>
+  </div>
+  <div class="design-note">
+    <strong>참고 — /analyze·/insight·/generate·/review 와의 관계</strong>
+    이 4개는 CLAUDE.md의 "권장 접근 순서"에 있는 <b>대화형 Skill 명령</b>으로, 최초에 유사도 기준·결측·중복 처리·개선 제안 로직 등의 규칙을 사람이 직접 설계·검증하며 <code>decisions.md</code>에 기록하는 단계였습니다. 그 결과가 <code>scripts/pipeline.py</code> 코드로 굳어졌기 때문에, <b>재현 시에는 이 4단계를 다시 입력하지 않고</b> 위 명령 1회 실행으로 전체 과정이 자동 수행됩니다.
+  </div>
+  <div class="verify-box">
+    <strong>✅ 재현성 검증 (직접 실행 확인)</strong>
+    아래 3개 시나리오로 파이프라인을 다시 실행해 커밋된 결과물과 줄 단위로 비교한 결과, 전부 <b>diff 0건</b>으로 일치했습니다.
+    <table style="margin-top:10px">
+      <thead><tr><th>시나리오</th><th>입력</th><th>비교 대상</th><th>결과</th></tr></thead>
+      <tbody>
+        <tr><td>기본 5건 + 전략</td><td>data/new_content_info.csv</td><td>content_prediction_report_pipeline_sample.md</td><td><b>일치 (110줄)</b></td></tr>
+        <tr><td>가상 신규 3건</td><td>output/example_new_content_alt.csv</td><td>output/example_report_alt.md</td><td><b>일치 (58줄)</b></td></tr>
+        <tr><td>스트레스 테스트(더미)</td><td>output/_verify/dummy_*.csv</td><td>output/_verify/dummy_report.md</td><td><b>일치 (99줄)</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <table>
+    <thead><tr><th>점검 항목</th><th>처리 규칙</th><th>결과</th></tr></thead>
+    <tbody>
+      <tr><td>완전 중복</td><td>content_id 기준 마지막 등장 제거</td><td>C003 1건 제거 → 69건 고정</td></tr>
+      <tr><td>결측 셀</td><td>행은 유지, 해당 지표만 비교에서 제외</td><td>C069·C070 처리 안정 (N/A 표기 로직 확인)</td></tr>
+      <tr><td>유사 매칭</td><td>앵커(type+channel) + 서브점수(posting_hour+2/has_emoji+1) → content_id 오름차순</td><td>실행마다 동일 TOP3 (결정론적)</td></tr>
+      <tr><td>앵커 후보 부족</td><td>channel만 완화(type 유지) → 그래도 부족하면 있는 대로 사용</td><td>type은 절대 완화 안 함(스트레스 테스트로 버그 발견·수정)</td></tr>
+      <tr><td>has_emoji</td><td>pandas가 "True"/"False" 문자열을 bool로 자동 인식</td><td>타입 오류 0</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section lvl-standard">
+  <div class="section-title"><span class="section-tag tag-standard">Standard</span> 📝 의사결정 로그 요약</div>
+  <table class="dec-table">
+    <thead><tr><th>결정 항목</th><th>선택</th><th>근거</th></tr></thead>
+    <tbody>
+      <tr><td>유사도 정의</td><td>앵커(type+channel 고정) + 서브점수 3점 만점</td><td>posting_hour +2 / has_emoji +1 (실측 CTR 영향력 순), 형식·플랫폼이 다르면 비교 자체가 무의미하다고 판단</td></tr>
+      <tr><td>topic_category 가중치</td><td>+1점 → <b>0점</b>으로 조정</td><td>ANOVA 검증 결과 CTR과 유의한 관계 없음(F(3,65)=0.14, η²=0.006)</td></tr>
+      <tr><td>동점 처리</td><td>content_id 오름차순</td><td>재현성 확보를 위한 결정론적 정렬</td></tr>
+      <tr><td>중복 C003</td><td>마지막 등장 행 제거(69건)</td><td>완전 중복이 그룹 평균·빈도를 과대 반영</td></tr>
+      <tr><td>결측 C069·C070</td><td>행 유지, 필요한 지표만 제외</td><td>CTR엔 두 건 모두 값이 있어 핵심 진단에 지장 없음</td></tr>
+      <tr><td>제목 길이(소셜 30자+)</td><td>개선 제안 근거로 사용 안 함</td><td>과거 데이터에 사례 0건 — 업계 통설과 자사 데이터 근거를 섞지 않기 위함</td></tr>
+      <tr><td>신규⑤ 약한 매칭</td><td>"신뢰도 낮음" 명시</td><td>서브점수 최고 2/3에 그쳐 매칭 강도를 투명하게 표기</td></tr>
+    </tbody>
+  </table>
+  <p class="note" style="margin-top:14px">상세 근거·대안 비교는 <code>decisions.md</code> 참고.</p>
+</div>
+
+<!-- ================= CHALLENGE ================= -->
+<div class="section lvl-challenge">
+  <div class="section-title"><span class="section-tag tag-challenge">Challenge</span> ⚖️ 콘텐츠 발행 전략 기획안 (자동 생성)</div>
+  <div class="priority-note">
+    <strong>우선순위 판단 기준 (본인 설계)</strong>
+    우선순위 점수 = 임팩트(1~5) × 실행용이도(1~5), 25점 만점. 임팩트는 효과크기(%p)를 구간별로 매핑하되, 해당 축이 통계적으로 유의하지 않으면 무조건 1점으로 고정. 실행용이도는 개입 성격(일정 조정 vs 조직 프로세스 변경)에 따라 고정. 곱셈을 택한 이유는 한쪽이 극히 낮으면 전체 우선순위도 낮아야 한다는 실무 판단 때문(덧셈은 한쪽이 낮아도 다른 쪽으로 상쇄되어 과대평가될 위험).
+  </div>
+
+  <div class="score-legend">
+    <div class="score-legend-col">
+      <div class="score-legend-title">임팩트 (1~5) — 효과크기(%p) 기준</div>
+      <table class="legend-table">
+        <tr><td><span class="legend-score s5">5</span></td><td>효과크기 <b>1.2%p 이상</b> + 통계적으로 유의함</td></tr>
+        <tr><td><span class="legend-score s4">4</span></td><td>효과크기 <b>0.8~1.2%p</b> + 통계적으로 유의함</td></tr>
+        <tr><td><span class="legend-score s3">3</span></td><td>효과크기 <b>0.5~0.8%p</b> + 통계적으로 유의함</td></tr>
+        <tr><td><span class="legend-score s2">2</span></td><td>효과크기 <b>0.2~0.5%p</b> + 통계적으로 유의함</td></tr>
+        <tr><td><span class="legend-score s1">1</span></td><td>효과크기 0.2%p 미만, <b>또는</b> 통계적으로 유의하지 않으면 크기와 무관하게 무조건 1점</td></tr>
+      </table>
+    </div>
+    <div class="score-legend-col">
+      <div class="score-legend-title">실행용이도 (1~5) — 개입 성격 기준</div>
+      <table class="legend-table">
+        <tr><td><span class="legend-score s5">5</span></td><td>발행 일정·체크리스트 조정만 필요, 제작물 변경 없음</td></tr>
+        <tr><td><span class="legend-score s4">4</span></td><td>가이드·워크플로 소폭 조정 필요 (제작물 변경 없음)</td></tr>
+        <tr><td><span class="legend-score s3">3</span></td><td>기존 리소스 내에서 콘텐츠 제작 방식 일부 변경 필요</td></tr>
+        <tr><td><span class="legend-score s2">2</span></td><td>콘텐츠 믹스 재배분 등 조직적 프로세스 변경 필요</td></tr>
+        <tr><td><span class="legend-score s1">1</span></td><td>신규 프로세스·조직 신설이 필요한 수준</td></tr>
+      </table>
+    </div>
+  </div>
+  <p class="legend-footnote">📌 이번 진단에서 탐지된 4개 후보는 실행용이도 <b>5점</b>(일정·체크리스트 조정) 또는 <b>2점</b>(조직 프로세스 변경)으로만 나뉘었고, 3·4점 구간 후보는 이번 데이터에서 탐지되지 않았습니다.</p>
+
+  <div class="proposal">
+    <div class="proposal-header" style="background:#fff8f8;border-bottom:1px solid #eee">
+      <div class="proposal-meta">
+        <div class="proposal-num">기획안 01</div>
+        <div class="proposal-title">발행 캘린더 시간대 재배치</div>
+        <div class="proposal-sub">저성과 시간대(8·12시) 발행 비중을 줄이고 고성과 시간대(20시)로 재배치</div>
+      </div>
+      <div class="priority-badge pb-p0">
+        <div class="pb-label">Priority</div>
+        <div class="pb-score">25점</div>
+      </div>
+    </div>
+    <div class="proposal-body">
+      <div class="prop-section">
+        <div class="prop-section-title">문제 정의</div>
+        <div class="prop-section-body">콘텐츠의 46.4%(32/69건)가 평균 미달 시간대(8시·12시)에 발행되고 있습니다.</div>
+      </div>
+      <div class="prop-section">
+        <div class="prop-section-title">근거 데이터 · 예상 효과</div>
+        <div class="prop-section-body">8시 평균 CTR 2.88% vs 20시 4.36%. 5개 유사도 축 중 CTR 효과크기 최대(ANOVA F(3,65)=19.87, η²=0.48, 유의함). 해당 32건에 적용 시 콘텐츠별 최대 <b>+1.48%p</b> CTR 개선 가능성(관찰치 기준, 인과관계 검증 아님). 제작물 변경 없이 일정만 조정.</div>
+      </div>
+      <div class="prop-section">
+        <div class="prop-section-title">전략 제안</div>
+        <div class="prop-section-body">발행 캘린더에서 8시·12시 슬롯을 20시 등 고성과 시간대로 우선 재배치합니다.</div>
+      </div>
+      <div class="prop-section">
+        <div class="prop-section-title">우선순위 계산</div>
+        <div class="prop-section-body">
+          <div class="score-breakdown">
+            <div class="score-row"><span class="score-label">임팩트 (1~5)</span><div class="score-bar-track"><div class="score-bar-fill" style="width:100%;background:#e63946"></div></div><span class="score-val">5/5</span></div>
+            <div class="score-row"><span class="score-label">실행용이도 (1~5)</span><div class="score-bar-track"><div class="score-bar-fill" style="width:100%;background:#e63946"></div></div><span class="score-val">5/5</span></div>
+            <div class="score-row" style="font-weight:700;font-size:14px;margin-top:4px"><span class="score-label">총점</span><div class="score-bar-track"><div class="score-bar-fill" style="width:100%;background:#e63946"></div></div><span class="score-val" style="color:#e63946">25/25</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="proposal">
+    <div class="proposal-header" style="background:#fffdf0;border-bottom:1px solid #eee">
+      <div class="proposal-meta">
+        <div class="proposal-num">기획안 02</div>
+        <div class="proposal-title">발행 전 이모지 체크리스트 도입</div>
+        <div class="proposal-sub">제목 이모지 포함 여부를 발행 전 필수 점검 항목으로 표준화</div>
+      </div>
+      <div class="priority-badge pb-p1">
+        <div class="pb-label">Priority</div>
+        <div class="pb-score">20점</div>
+      </div>
+    </div>
+    <div class="proposal-body">
+      <div class="prop-section">
+        <div class="prop-section-title">문제 정의</div>
+        <div class="prop-section-body">콘텐츠의 37.7%(26/69건)가 제목에 이모지 없이 발행되고 있습니다.</div>
+      </div>
+      <div class="prop-section">
+        <div class="prop-section-title">근거 데이터 · 예상 효과</div>
+        <div class="prop-section-body">이모지 미포함 평균 CTR 2.95% vs 포함 4.01%(Welch t=6.12, 유의함). 해당 26건에 적용 시 콘텐츠별 최대 <b>+1.06%p</b> CTR 개선 가능성(관찰치 기준, 인과관계 검증 아님).</div>
+      </div>
+      <div class="prop-section">
+        <div class="prop-section-title">전략 제안</div>
+        <div class="prop-section-body">발행 전 체크리스트에 '제목 이모지 포함 여부'를 필수 항목으로 추가합니다.</div>
+      </div>
+      <div class="prop-section">
+        <div class="prop-section-title">우선순위 계산</div>
+        <div class="prop-section-body">
+          <div class="score-breakdown">
+            <div class="score-row"><span class="score-label">임팩트 (1~5)</span><div class="score-bar-track"><div class="score-bar-fill" style="width:80%;background:#856404"></div></div><span class="score-val">4/5</span></div>
+            <div class="score-row"><span class="score-label">실행용이도 (1~5)</span><div class="score-bar-track"><div class="score-bar-fill" style="width:100%;background:#856404"></div></div><span class="score-val">5/5</span></div>
+            <div class="score-row" style="font-weight:700;font-size:14px;margin-top:4px"><span class="score-label">총점</span><div class="score-bar-track"><div class="score-bar-fill" style="width:80%;background:#856404"></div></div><span class="score-val" style="color:#856404">20/25</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="deprioritized">
+    <strong style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#888;margin-bottom:8px">참고: 탐지됐지만 우선순위 상 채택되지 않은 후보</strong>
+    <p style="margin-bottom:8px"><b>블로그+블로그 조합 성과 점검</b> (6점 = 임팩트3×실행용이도2): 발행 비중 24.6%(17건)로 상위권이나 평균 CTR 2.99%로 전체 평균 대비 0.62%p 낮음. 다만 블로그는 SEO·인게이지먼트 등 CTR 외 가치가 있어 발행량 축소를 단정하지 않음.</p>
+    <p><b>'후기' 소재 비중 확대 검토</b> (2점 = 임팩트1×실행용이도2): 인게이지먼트 6.51%로 최고이나 비중은 15.9%로 최저. 최초엔 유력한 후보였으나, 추가 검증에서 topic_category가 engagement_rate와도 통계적으로 유의하지 않음이 확인돼(ANOVA F=0.93, p=0.43) 임팩트가 최저(1점)로 고정되며 자동으로 후순위로 밀려남.</p>
+  </div>
+</div>
+
+</div>
+</body>
+</html>
