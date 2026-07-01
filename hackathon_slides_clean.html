@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>콘텐츠 성과 예측기 — 해커톤 발표자료</title>
+<style>
+  :root{ --font-family:'Pretendard','Pretendard Variable',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif; }
+  *{box-sizing:border-box;}
+  html,body{margin:0;font-family:var(--font-family);background:#F1F1F3;-webkit-font-smoothing:antialiased;}
+  .deck{display:flex;flex-direction:column;align-items:center;gap:20px;padding:24px 16px;}
+  .frame{width:min(1180px,100%);overflow:hidden;background:#fff;box-shadow:0 8px 24px rgba(0,0,0,.10);}
+  .scale{transform-origin:top left;}
+  .slide{width:1920px;height:1080px;overflow:hidden;}
+  .pagenum{position:absolute;top:36px;right:48px;font-size:20px;font-weight:600;color:#A4A7B0;font-variant-numeric:tabular-nums;letter-spacing:0.02em;z-index:2;}
+  .pagenum.dark{color:#7A7E88;}
+  @media print{
+    html,body{background:#fff;}
+    .deck{gap:0;padding:0;}
+    .frame{width:1123px;box-shadow:none;height:632px!important;break-after:page;page-break-after:always;}
+    .scale{transform:scale(.5849)!important;}
+    @page{size:A4 landscape;margin:0;}
+  }
+</style>
+</head>
+<body>
+<div class="deck">
+
+<!-- ========== 0. 표지 ========== -->
+<div class="frame"><div class="scale"><section class="slide" style="position:relative;font-family:var(--font-family);background:#FFFFFF;color:#0D0E11;padding:96px 112px;display:flex;flex-direction:column">
+  <span class="pagenum">01 / 09</span>
+  <div style="display:flex;align-items:center;gap:14px;flex:none">
+    <span style="width:14px;height:14px;background:#33415A;border-radius:3px;display:inline-block"></span>
+    <span style="font-size:24px;font-weight:700;letter-spacing:0.28em;color:#33415A">AX HACKATHON 2026</span>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+    <p style="font-size:30px;font-weight:500;color:#A4A7B0;margin:0 0 20px">마케팅 공통 · 콘텐츠 성과 예측기</p>
+    <h1 style="font-size:80px;line-height:1.14;font-weight:800;letter-spacing:-0.02em;color:#0D0E11;margin:0;text-wrap:balance">감(感)에 의존하던 발행 판단을<br>통계적으로 검증된 근거로 바꿨다</h1>
+    <p style="font-size:32px;font-weight:600;color:#33415A;margin:32px 0 0">김효준 · 마케팅 직무 공통 (데이터 분석·PM·마케팅)</p>
+  </div>
+  <div style="flex:none;border-top:1px solid #E7E8EB;padding-top:28px;display:flex;justify-content:space-between;align-items:center">
+    <span style="font-size:20px;font-weight:500;color:#A4A7B0">2026.07.01 &nbsp;·&nbsp; 스파르타 AX 해커톤</span>
+    <span style="font-size:20px;font-weight:600;color:#666874">gywns7507@gmail.com</span>
+  </div>
+</section></div></div>
+
+<!-- ========== 1. 한 장 요약 ========== -->
+<div class="frame"><div class="scale"><section class="slide" style="position:relative;font-family:var(--font-family);background:#FFFFFF;color:#0D0E11;padding:80px 112px;display:flex;flex-direction:column">
+  <span class="pagenum">02 / 09</span>
+  <div style="flex:none;margin-bottom:44px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px"><span style="width:12px;height:12px;background:#33415A;border-radius:3px;display:inline-block"></span><span style="font-size:22px;font-weight:700;letter-spacing:0.2em;color:#33415A">EXECUTIVE SUMMARY</span></div>
+    <h2 style="font-size:54px;line-height:1.1;font-weight:700;color:#0D0E11;margin:0">한 장 요약</h2>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;gap:24px;min-height:0">
+    <div style="flex:1;display:grid;grid-template-columns:1fr 1.3fr;gap:48px;min-height:0">
+      <div style="background:#F4F5F7;border:2px solid #E1E3E7;border-radius:14px;padding:32px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center">
+        <div style="font-size:24px;font-weight:700;color:#1E2636;margin-bottom:14px">핵심 임팩트</div>
+        <div style="font-size:88px;font-weight:800;color:#33415A;line-height:1.18">발행 시간대 +1.48%p<br>이모지 사용 +1.06%p</div>
+        <div style="font-size:26px;font-weight:600;color:#1E2636;margin-top:14px">감(주관 판단) → 통계적으로 유의한 근거(ANOVA)</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:22px">
+        <div style="flex:1;padding:32px 36px;background:#F9F9FA;border:1px solid #E7E8EB;border-radius:14px;display:flex;flex-direction:column;justify-content:center">
+          <div style="font-size:19px;font-weight:700;letter-spacing:0.12em;color:#A4A7B0;margin-bottom:14px">받은 문제 (원문)</div>
+          <p style="font-size:27px;font-weight:500;line-height:1.6;color:#40414B;margin:0">콘텐츠 마케터는 발행 직전 "이거 올리면 반응이 어떨까?"를 늘 감(感)에 의존해 판단하고, 유사 콘텐츠 벤치마킹도 매번 수동으로 반복한다. 과거 성과 70건을 근거로 유사 콘텐츠 TOP3·예상 CTR 범위·개선 리포트를 산출하라.</p>
+        </div>
+        <div style="flex:1;padding:32px 36px;background:#F9F9FA;border:1px solid #E7E8EB;border-radius:14px;display:flex;flex-direction:column;justify-content:center">
+          <div style="font-size:19px;font-weight:700;letter-spacing:0.12em;color:#A4A7B0;margin-bottom:14px">만든 것</div>
+          <p style="font-size:31px;font-weight:600;line-height:1.5;color:#0D0E11;margin:0">"근거 있는 판단"과 "감"을 통계적으로 구분해, 신규 콘텐츠의 예상 CTR과 개선안을 누가 실행해도 같은 결론으로 재현하는 진단 대시보드를 만들었다</p>
+        </div>
+      </div>
+    </div>
+    <div style="flex:none;padding:22px 36px;background:#F9F9FA;border:1px solid #E7E8EB;border-radius:14px;display:flex;align-items:center;gap:24px">
+      <span style="font-size:20px;font-weight:700;color:#0D0E11;flex:none">데모</span>
+      <a href="https://spartahackathon-hk968rlpf6smau7aewypxy.streamlit.app/" style="font-size:24px;font-weight:600;color:#33415A;text-decoration:none;white-space:nowrap">https://spartahackathon-hk968rlpf6smau7aewypxy.streamlit.app/</a>
+    </div>
+  </div>
+</section></div></div>
+
+<!-- ========== 2. 문제 이해 ========== -->
+<div class="frame"><div class="scale"><section class="slide" style="position:relative;font-family:var(--font-family);background:#FFFFFF;color:#0D0E11;padding:80px 112px;display:flex;flex-direction:column">
+  <span class="pagenum">03 / 09</span>
+  <div style="flex:none;margin-bottom:36px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px"><span style="width:12px;height:12px;background:#33415A;border-radius:3px;display:inline-block"></span><span style="font-size:22px;font-weight:700;letter-spacing:0.2em;color:#33415A">PROBLEM DEFINITION</span></div>
+    <h2 style="font-size:54px;line-height:1.1;font-weight:700;color:#0D0E11;margin:0">문제 이해</h2>
+  </div>
+  <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:20px;min-height:0">
+    <div style="background:#F9F9FA;border:1px solid #E7E8EB;border-radius:14px;padding:28px">
+      <div style="font-size:17px;font-weight:700;letter-spacing:0.12em;color:#A4A7B0;margin-bottom:14px">기업 원문 문제</div>
+      <p style="font-size:21px;font-weight:500;line-height:1.6;color:#40414B;margin:0">신규 콘텐츠 정보를 입력받아 과거 성과 데이터(70건) 패턴 근거로 ①유사 콘텐츠 TOP3 ②예상 CTR 범위·개선 제안 ③리포트를 산출. "ML 예측 모델이 아닌 패턴 기반 진단"이라는 제약 명시.</p>
+    </div>
+    <div style="background:#F4F5F7;border:2px solid #E1E3E7;border-radius:14px;padding:28px">
+      <div style="font-size:17px;font-weight:700;letter-spacing:0.12em;color:#33415A;margin-bottom:14px">내가 재정의한 문제</div>
+      <p style="font-size:21px;font-weight:500;line-height:1.6;color:#0D0E11;margin:0">진짜 문제는 예측력 부족이 아니라 "근거 있는 판단"과 "감"을 구분할 기준의 부재. 70건 소표본에서 진짜 영향 변수와 그럴듯해 보이는 무의미한 변수를 가려야, 개선 제안이 또 다른 감이 되지 않는다.</p>
+    </div>
+    <div style="background:#F9F9FA;border:1px solid #E7E8EB;border-radius:14px;padding:28px">
+      <div style="font-size:17px;font-weight:700;letter-spacing:0.12em;color:#A4A7B0;margin-bottom:14px">문제의 크기 (Before)</div>
+      <p style="font-size:21px;font-weight:500;line-height:1.6;color:#40414B;margin:0">발행 전 검증 수단 없이 감으로 판단 → 유사 콘텐츠 벤치마킹도 매번 수동 반복 → 사람마다 다른 TOP3가 나와 재현이 안 됨.</p>
+    </div>
+    <div style="background:#F9F9FA;border:1px solid #E7E8EB;border-radius:14px;padding:28px">
+      <div style="font-size:17px;font-weight:700;letter-spacing:0.12em;color:#A4A7B0;margin-bottom:14px">스코프 — 푼 것 / 안 푼 것</div>
+      <p style="font-size:21px;font-weight:500;line-height:1.6;color:#40414B;margin:0">O 5개 변수 통계 검증 + 유사도 매칭을 코드로 고정해 재현 가능하게 함<br>X ML 예측 모델 구축은 아님 (미션 제약대로 패턴 기반 진단에 한정)</p>
+    </div>
+  </div>
+</section></div></div>
+
+<!-- ========== 3. 해결 접근 & 의사결정 ========== -->
+<div class="frame"><div class="scale"><section class="slide" style="position:relative;font-family:var(--font-family);background:#FFFFFF;color:#0D0E11;padding:80px 112px;display:flex;flex-direction:column">
+  <span class="pagenum">04 / 09</span>
+  <div style="flex:none;margin-bottom:36px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px"><span style="width:12px;height:12px;background:#33415A;border-radius:3px;display:inline-block"></span><span style="font-size:22px;font-weight:700;letter-spacing:0.2em;color:#33415A">APPROACH &amp; DECISION</span></div>
+    <h2 style="font-size:54px;line-height:1.1;font-weight:700;color:#0D0E11;margin:0">해결 접근 &amp; 의사결정</h2>
+  </div>
+  <div style="flex:1;display:grid;grid-template-columns:1.05fr 1fr;gap:40px;min-height:0">
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <div style="padding:24px 28px;background:#F9F9FA;border:1px solid #E7E8EB;border-radius:14px">
+        <div style="font-size:17px;font-weight:700;color:#A4A7B0;margin-bottom:12px">접근 가설 / 핵심 흐름</div>
+        <p style="font-size:20px;font-weight:500;line-height:1.6;color:#40414B;margin:0">/analyze(데이터 품질·기초 패턴) → /insight(유사도 기준 설계) → /generate(리포트 생성) → /review(자가 점검) 4단계를 거쳐, 전 과정을 scripts/pipeline.py 하나로 통합</p>
+      </div>
+      <div style="padding:24px 28px;background:#F9F9FA;border:1px solid #E7E8EB;border-radius:14px">
+        <div style="font-size:17px;font-weight:700;color:#A4A7B0;margin-bottom:12px">버린 대안 &amp; 이유</div>
+        <p style="font-size:20px;font-weight:500;line-height:1.6;color:#40414B;margin:0">유사도 가중치를 감으로 정한 초안(시간대+2·주제+1·이모지+1)을 버리고 ANOVA·t-test·상관분석으로 5개 변수 전부 검증. topic_category는 η²=0.006으로 CTR과 무관해 가중치를 1→0으로 낮춤</p>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <div style="padding:24px 28px;background:#F4F5F7;border:2px solid #E1E3E7;border-radius:14px;flex:1.4">
+        <div style="font-size:17px;font-weight:700;color:#33415A;margin-bottom:12px">▸ 막히는 지점 &amp; 대화 방법</div>
+        <p style="font-size:19px;font-weight:500;line-height:1.55;color:#0D0E11;margin:0">① 가중치를 감으로 정했다는 의심 → 통계 검증으로 방향 전환<br>② 69건에선 안 보이던 버그 → 극단 더미 데이터로 스트레스 테스트해 콘텐츠 유형 혼합 매칭 버그 발견<br>③ 배포 중 연쇄 오류(자동번역·pandas 충돌·한글 경로·Python 버전) → 로그를 그대로 공유하며 원인을 하나씩 좁힘</p>
+      </div>
+      <div style="padding:24px 28px;background:#F9F9FA;border:1px solid #E7E8EB;border-radius:14px">
+        <div style="font-size:17px;font-weight:700;color:#A4A7B0;margin-bottom:12px">AI vs 내 판단</div>
+        <p style="font-size:19px;font-weight:500;line-height:1.55;color:#40414B;margin:0">AI: 통계 분석 실행, 진단 리포트 작성, 배포 오류 원인 분석<br>나: 문제 재정의, 가중치 재설계 방향, 극단 케이스 검증 필요성, 배포 구조 수정 방향 결정</p>
+      </div>
+    </div>
+  </div>
+</section></div></div>
+
+<!-- ========== 4. 산출물 & 증거 ========== -->
+<div class="frame"><div class="scale"><section class="slide" style="position:relative;font-family:var(--font-family);background:#FFFFFF;color:#0D0E11;padding:80px 112px;display:flex;flex-direction:column">
+  <span class="pagenum">05 / 09</span>
+  <div style="flex:none;margin-bottom:36px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px"><span style="width:12px;height:12px;background:#33415A;border-radius:3px;display:inline-block"></span><span style="font-size:22px;font-weight:700;letter-spacing:0.2em;color:#33415A">OUTPUT &amp; DEMO</span></div>
+    <h2 style="font-size:54px;line-height:1.1;font-weight:700;color:#0D0E11;margin:0">산출물 &amp; 증거</h2>
+  </div>
+  <div style="flex:1;display:grid;grid-template-columns:1.5fr 1fr;gap:40px;min-height:0">
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <span style="font-size:14px;font-weight:800;letter-spacing:0.04em;color:#fff;background:#1D1E23;padding:4px 12px;border-radius:6px">BASIC</span>
+        <span style="font-size:20px;font-weight:700;color:#0D0E11">신규 콘텐츠 5건 일괄 진단 — 실제 출력</span>
+      </div>
+      <div style="flex:1;overflow-x:auto;border:1px solid #E7E8EB;border-radius:14px">
+        <table style="width:100%;border-collapse:collapse;font-size:15px;min-width:820px">
+          <thead>
+            <tr style="background:#F9F9FA;color:#A4A7B0">
+              <th style="padding:12px 10px;text-align:left;font-weight:700;border-bottom:1px solid #E7E8EB">#</th>
+              <th style="padding:12px 10px;text-align:left;font-weight:700;border-bottom:1px solid #E7E8EB">제목</th>
+              <th style="padding:12px 10px;text-align:left;font-weight:700;border-bottom:1px solid #E7E8EB">조건</th>
+              <th style="padding:12px 10px;text-align:center;font-weight:700;border-bottom:1px solid #E7E8EB">예상 CTR</th>
+              <th style="padding:12px 10px;text-align:center;font-weight:700;border-bottom:1px solid #E7E8EB">앵커 후보</th>
+              <th style="padding:12px 10px;text-align:center;font-weight:700;border-bottom:1px solid #E7E8EB">판정</th>
+            </tr>
+          </thead>
+          <tbody style="font-variant-numeric:tabular-nums">
+            <tr style="border-bottom:1px solid #F1F1F3">
+              <td style="padding:11px 10px;color:#A4A7B0;font-weight:600">①</td>
+              <td style="padding:11px 10px;color:#0D0E11;font-weight:600">주니어 마케터 6개월 성장기</td>
+              <td style="padding:11px 10px;color:#858893">숏폼·커리어·유튜브·20시·이모지O</td>
+              <td style="padding:11px 10px;text-align:center;color:#0D0E11;font-weight:700">4.3~5.8%</td>
+              <td style="padding:11px 10px;text-align:center;color:#40414B">13건</td>
+              <td style="padding:11px 10px;text-align:center"><span style="background:#E9F9EE;color:#128A3D;font-size:13px;font-weight:700;padding:4px 10px;border-radius:6px;white-space:nowrap">이미 최적·유지</span></td>
+            </tr>
+            <tr style="border-bottom:1px solid #F1F1F3">
+              <td style="padding:11px 10px;color:#A4A7B0;font-weight:600">②</td>
+              <td style="padding:11px 10px;color:#0D0E11;font-weight:600">노션으로 끝내는 일주일 업무 정리</td>
+              <td style="padding:11px 10px;color:#858893">카드뉴스·생산성·인스타·18시·이모지O</td>
+              <td style="padding:11px 10px;text-align:center;color:#0D0E11;font-weight:700">3.7~4.2%</td>
+              <td style="padding:11px 10px;text-align:center;color:#40414B">22건</td>
+              <td style="padding:11px 10px;text-align:center"><span style="background:#FFF6DE;color:#9A6A00;font-size:13px;font-weight:700;padding:4px 10px;border-radius:6px;white-space:nowrap">20시/숏폼 검토</span></td>
+            </tr>
+            <tr style="border-bottom:1px solid #F1F1F3">
+              <td style="padding:11px 10px;color:#A4A7B0;font-weight:600">③</td>
+              <td style="padding:11px 10px;color:#0D0E11;font-weight:600">2026 디지털 마케팅 트렌드 총정리와…</td>
+              <td style="padding:11px 10px;color:#858893">블로그·트렌드·블로그·8시·이모지없음</td>
+              <td style="padding:11px 10px;text-align:center;color:#0D0E11;font-weight:700">3.3~4.0%</td>
+              <td style="padding:11px 10px;text-align:center;color:#40414B">17건</td>
+              <td style="padding:11px 10px;text-align:center"><span style="background:#FFF6DE;color:#9A6A00;font-size:13px;font-weight:700;padding:4px 10px;border-radius:6px;white-space:nowrap">12시 조정 검토</span></td>
+            </tr>
+            <tr style="border-bottom:1px solid #F1F1F3">
+              <td style="padding:11px 10px;color:#A4A7B0;font-weight:600">④</td>
+              <td style="padding:11px 10px;color:#0D0E11;font-weight:600">수강생 취업 성과 한눈에 보기</td>
+              <td style="padding:11px 10px;color:#858893">인포그래픽·후기·인스타·18시·이모지O</td>
+              <td style="padding:11px 10px;text-align:center;color:#0D0E11;font-weight:700">3.2~3.5%</td>
+              <td style="padding:11px 10px;text-align:center;color:#40414B">6건</td>
+              <td style="padding:11px 10px;text-align:center"><span style="background:#FFF6DE;color:#9A6A00;font-size:13px;font-weight:700;padding:4px 10px;border-radius:6px;white-space:nowrap">숏폼 전환 검토</span></td>
+            </tr>
+            <tr>
+              <td style="padding:11px 10px;color:#A4A7B0;font-weight:600">⑤</td>
+              <td style="padding:11px 10px;color:#0D0E11;font-weight:600">점심에 보는 AI 트렌드 요약</td>
+              <td style="padding:11px 10px;color:#858893">숏폼·트렌드·인스타·12시·이모지없음</td>
+              <td style="padding:11px 10px;text-align:center;color:#0D0E11;font-weight:700">3.2~4.9%</td>
+              <td style="padding:11px 10px;text-align:center;color:#40414B">8건</td>
+              <td style="padding:11px 10px;text-align:center"><span style="background:#FBEAEA;color:#B3261E;font-size:13px;font-weight:700;padding:4px 10px;border-radius:6px;white-space:nowrap">이모지+20시 (신뢰도 낮음)</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="padding:16px 22px;background:#F9F9FA;border:1px solid #E7E8EB;border-radius:12px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;gap:16px"><span style="font-size:17px;font-weight:700;color:#0D0E11;flex:none;width:90px">웹 데모</span><a href="https://spartahackathon-hk968rlpf6smau7aewypxy.streamlit.app/" style="font-size:17px;font-weight:600;color:#33415A;text-decoration:none;word-break:break-all">streamlit.app 대시보드</a></div>
+        <div style="display:flex;align-items:center;gap:16px"><span style="font-size:17px;font-weight:700;color:#0D0E11;flex:none;width:90px">저장소</span><a href="https://github.com/gywns7507/sparta_hackathon" style="font-size:17px;font-weight:600;color:#33415A;text-decoration:none;word-break:break-all">github.com/gywns7507/sparta_hackathon</a></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:0">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><span style="width:10px;height:10px;background:#33415A;border-radius:2px;display:inline-block"></span><span style="font-size:24px;font-weight:700;color:#0D0E11">실제 동작 사이클</span></div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;gap:14px;align-items:flex-start"><span style="background:#33415A;color:#fff;font-size:15px;font-weight:700;padding:5px 12px;border-radius:6px;flex:none;margin-top:2px">입력</span><p style="font-size:20px;font-weight:500;line-height:1.55;color:#40414B;margin:0">신규 콘텐츠 정보(제목·유형·채널·발행 예정 시간대)</p></div>
+        <div style="display:flex;gap:14px;align-items:flex-start"><span style="background:#1E2636;color:#fff;font-size:15px;font-weight:700;padding:5px 12px;border-radius:6px;flex:none;margin-top:2px">처리</span><p style="font-size:20px;font-weight:500;line-height:1.55;color:#40414B;margin:0">과거 70건과 통계 검증된 가중치로 유사 콘텐츠 TOP3 매칭 + 예상 CTR 범위 진단</p></div>
+        <div style="display:flex;gap:14px;align-items:flex-start"><span style="background:#40414B;color:#fff;font-size:15px;font-weight:700;padding:5px 12px;border-radius:6px;flex:none;margin-top:2px">결과</span><p style="font-size:20px;font-weight:500;line-height:1.55;color:#40414B;margin:0">content_prediction_report.md + 웹 대시보드 시각화</p></div>
+      </div>
+      <div style="margin-top:24px;padding:20px 24px;background:#F4F5F7;border:1px solid #E1E3E7;border-radius:12px">
+        <p style="font-size:19px;font-weight:500;line-height:1.6;color:#40414B;margin:0"><span style="color:#33415A;font-weight:700">핵심: </span>담당자는 기술을 모른다. "어떻게 만들었나"가 아니라 <span style="font-weight:700">"어떤 판단이 왜 근거 있는지"</span>로 설명. 통계 검증 상세는 부록으로.</p>
+      </div>
+    </div>
+  </div>
+</section></div></div>
+
+<!-- ========== 5. 임팩트 ========== -->
+<div class="frame"><div class="scale"><section class="slide" style="position:relative;font-family:var(--font-family);background:#FFFFFF;color:#0D0E11;padding:80px 112px;display:flex;flex-direction:column">
+  <span class="pagenum">06 / 09</span>
+  <div style="flex:none;margin-bottom:36px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px"><span style="width:12px;height:12px;background:#33415A;border-radius:3px;display:inline-block"></span><span style="font-size:22px;font-weight:700;letter-spacing:0.2em;color:#33415A">IMPACT</span></div>
+    <h2 style="font-size:54px;line-height:1.1;font-weight:700;color:#0D0E11;margin:0">임팩트</h2>
+  </div>
+  <div style="flex:1;display:grid;grid-template-columns:1.3fr 1fr;gap:48px;min-height:0">
+    <div style="display:flex;flex-direction:column">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px"><span style="width:10px;height:10px;background:#33415A;border-radius:2px;display:inline-block"></span><span style="font-size:24px;font-weight:700;color:#0D0E11">Before / After</span></div>
+      <table style="width:100%;border-collapse:collapse;font-size:21px">
+        <thead>
+          <tr style="background:#0D0E11;color:#fff">
+            <th style="padding:14px 18px;text-align:left;font-weight:700;border-radius:10px 0 0 0">핵심 지표</th>
+            <th style="padding:14px 18px;text-align:center;font-weight:700">Before</th>
+            <th style="padding:14px 18px;text-align:center;font-weight:700;border-radius:0 10px 0 0;color:#9AA8C3">After</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #E7E8EB">
+            <td style="padding:16px 18px;font-weight:600;color:#40414B">판단 근거</td>
+            <td style="padding:16px 18px;text-align:center;color:#A4A7B0;font-weight:600">감(주관적 판단)</td>
+            <td style="padding:16px 18px;text-align:center;color:#33415A;font-weight:800">통계적으로 유의한 5개 변수 진단</td>
+          </tr>
+          <tr style="border-bottom:1px solid #E7E8EB">
+            <td style="padding:16px 18px;font-weight:600;color:#40414B">발행 시간대 CTR (8시 vs 20시)</td>
+            <td style="padding:16px 18px;text-align:center;color:#A4A7B0;font-weight:600">2.88%</td>
+            <td style="padding:16px 18px;text-align:center;color:#33415A;font-weight:800">4.36% (+1.48%p)</td>
+          </tr>
+          <tr>
+            <td style="padding:16px 18px;font-weight:600;color:#40414B">이모지 사용 CTR (미포함 vs 포함)</td>
+            <td style="padding:16px 18px;text-align:center;color:#A4A7B0;font-weight:600">2.95%</td>
+            <td style="padding:16px 18px;text-align:center;color:#33415A;font-weight:800">4.01% (+1.06%p)</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size:16px;font-weight:500;color:#A4A7B0;margin:12px 0 0">* 해커톤용 더미 데이터(69건) 기반 ANOVA 검증 수치. 실제 프로덕션 매출 효과가 아닌, 방법론적 임팩트로 이해할 것</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px"><span style="width:10px;height:10px;background:#33415A;border-radius:2px;display:inline-block"></span><span style="font-size:24px;font-weight:700;color:#0D0E11">정성 효과</span></div>
+      <div style="display:flex;gap:14px;align-items:flex-start"><span style="color:#33415A;font-size:22px;font-weight:800;flex:none">·</span><p style="font-size:20px;font-weight:500;line-height:1.55;color:#40414B;margin:0">발행 전 검증 수단 없음 → 몇 초 내 재현 가능한 예상 CTR 범위 확인</p></div>
+      <div style="display:flex;gap:14px;align-items:flex-start"><span style="color:#33415A;font-size:22px;font-weight:800;flex:none">·</span><p style="font-size:20px;font-weight:500;line-height:1.55;color:#40414B;margin:0">과거 콘텐츠 46.4%가 저성과 시간대, 37.7%가 이모지 없이 발행 중임을 자동 탐지</p></div>
+      <div style="display:flex;gap:14px;align-items:flex-start"><span style="color:#33415A;font-size:22px;font-weight:800;flex:none">·</span><p style="font-size:20px;font-weight:500;line-height:1.55;color:#40414B;margin:0">제작물 변경 없이 발행 캘린더 조정만으로 개선 가능 — 임팩트×실행용이도 25점 체계로 우선순위화</p></div>
+    </div>
+  </div>
+</section></div></div>
+
+<!-- ========== 6. 적용 가능성 & 아쉬운 점 & 비전 ========== -->
+<div class="frame"><div class="scale"><section class="slide" style="position:relative;font-family:var(--font-family);background:#FFFFFF;color:#0D0E11;padding:80px 112px;display:flex;flex-direction:column">
+  <span class="pagenum">07 / 09</span>
+  <div style="flex:none;margin-bottom:36px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px"><span style="width:12px;height:12px;background:#33415A;border-radius:3px;display:inline-block"></span><span style="font-size:22px;font-weight:700;letter-spacing:0.2em;color:#33415A">APPLICABILITY &amp; REFLECTION</span></div>
+    <h2 style="font-size:54px;line-height:1.1;font-weight:700;color:#0D0E11;margin:0">적용 가능성 &amp; 아쉬운 점 &amp; 비전</h2>
+  </div>
+  <div style="flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px;min-height:0">
+    <div style="background:#F9F9FA;border:1px solid #E7E8EB;border-radius:14px;padding:28px">
+      <div style="font-size:17px;font-weight:700;color:#A4A7B0;margin-bottom:20px;letter-spacing:0.08em">우리 환경 적용 시</div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;gap:12px;align-items:flex-start"><span style="color:#40414B;font-size:20px;font-weight:800;flex:none">·</span><p style="font-size:20px;font-weight:500;line-height:1.55;color:#40414B;margin:0">실제 프로덕션 CTR·인게이지먼트 데이터 연동</p></div>
+        <div style="display:flex;gap:12px;align-items:flex-start"><span style="color:#40414B;font-size:20px;font-weight:800;flex:none">·</span><p style="font-size:20px;font-weight:500;line-height:1.55;color:#40414B;margin:0">채널별(인스타그램·유튜브·블로그) API 연결, 발행 캘린더 시스템 연동</p></div>
+      </div>
+    </div>
+    <div style="background:#F4F5F7;border:2px solid #E1E3E7;border-radius:14px;padding:28px">
+      <div style="font-size:17px;font-weight:700;color:#33415A;margin-bottom:20px;letter-spacing:0.08em">솔직한 아쉬움</div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;gap:12px;align-items:flex-start"><span style="color:#33415A;font-size:20px;font-weight:800;flex:none">·</span><p style="font-size:20px;font-weight:500;line-height:1.55;color:#40414B;margin:0">더미 데이터 기반 검증이라 실제 매출·CTR 효과는 아직 증명되지 않음</p></div>
+        <div style="display:flex;gap:12px;align-items:flex-start"><span style="color:#33415A;font-size:20px;font-weight:800;flex:none">·</span><p style="font-size:20px;font-weight:500;line-height:1.55;color:#40414B;margin:0">시간이 더 있었다면 채널별(인스타·유튜브 등) 특성을 분리해 분석했을 것</p></div>
+      </div>
+    </div>
+    <div style="background:#F9F9FA;border:1px solid #E7E8EB;border-radius:14px;padding:28px">
+      <div style="font-size:17px;font-weight:700;color:#A4A7B0;margin-bottom:20px;letter-spacing:0.08em">2주 더 주어진다면</div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;gap:12px;align-items:flex-start"><span style="color:#33415A;font-size:20px;font-weight:800;flex:none">→</span><p style="font-size:20px;font-weight:500;line-height:1.55;color:#40414B;margin:0">실제 프로덕션 데이터로 재검증</p></div>
+        <div style="display:flex;gap:12px;align-items:flex-start"><span style="color:#33415A;font-size:20px;font-weight:800;flex:none">→</span><p style="font-size:20px;font-weight:500;line-height:1.55;color:#40414B;margin:0">채널별 최적 발행 시간 개별 모델링</p></div>
+        <div style="display:flex;gap:12px;align-items:flex-start"><span style="color:#33415A;font-size:20px;font-weight:800;flex:none">→</span><p style="font-size:20px;font-weight:500;line-height:1.55;color:#40414B;margin:0">자동 발행 캘린더 추천 기능까지 확장</p></div>
+      </div>
+    </div>
+  </div>
+</section></div></div>
+
+<!-- ========== 7. 마무리 ========== -->
+<div class="frame"><div class="scale"><section class="slide" style="position:relative;font-family:var(--font-family);background:#1D1E23;color:#FFFFFF;padding:96px 112px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+  <span class="pagenum dark">08 / 09</span>
+  <div style="display:flex;align-items:center;gap:14px;margin-bottom:24px"><span style="width:14px;height:14px;background:#9AA8C3;border-radius:3px;display:inline-block"></span><span style="font-size:24px;font-weight:700;letter-spacing:0.28em;color:#9AA8C3">CLOSING</span></div>
+  <h1 style="font-size:88px;font-weight:800;letter-spacing:-0.02em;margin:0 0 32px;line-height:1.05">이 문제, 계속 맡고 싶습니다</h1>
+  <p style="font-size:27px;font-weight:500;color:#BDC0C7;margin:0 0 18px;max-width:1300px;line-height:1.65">실제 프로덕션 데이터로 재검증하고, 채널별 발행 캘린더 자동 추천까지 확장할 수 있습니다</p>
+  <p style="font-size:25px;font-weight:500;color:#858893;margin:0;max-width:1300px;line-height:1.65">감이 아니라 근거로 판단하는 문화를 콘텐츠 마케팅팀에 심고 싶다는 것 — 그것이 제가 이 문제를 고른 이유이자, 오늘 만든 결과물이 그 증거입니다</p>
+  <div style="font-size:24px;font-weight:600;color:#FFFFFF;margin-top:52px">gywns7507@gmail.com</div>
+  <div style="position:absolute;bottom:56px;font-size:18px;font-weight:500;color:#666874">2026.07.01 &nbsp;·&nbsp; 스파르타 AX 해커톤 &nbsp;·&nbsp; 김효준</div>
+</section></div></div>
+
+<!-- ========== (별첨) 기술 & 로직 상세 ========== -->
+<div class="frame"><div class="scale"><section class="slide" style="position:relative;font-family:var(--font-family);background:#FFFFFF;color:#0D0E11;padding:80px 112px;display:flex;flex-direction:column">
+  <span class="pagenum">09 / 09</span>
+  <div style="flex:none;margin-bottom:36px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px"><span style="width:12px;height:12px;background:#A4A7B0;border-radius:3px;display:inline-block"></span><span style="font-size:22px;font-weight:700;letter-spacing:0.2em;color:#A4A7B0">APPENDIX</span></div>
+    <h2 style="font-size:54px;line-height:1.1;font-weight:700;color:#0D0E11;margin:0">(별첨) 기술 &amp; 로직 상세</h2>
+    <p style="font-size:20px;font-weight:500;color:#A4A7B0;margin:12px 0 0">기술 검증을 원하는 담당자만 여기로 — 본문은 비즈니스 언어로만</p>
+  </div>
+  <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:20px;min-height:0">
+    <div style="background:#F9F9FA;border:1px solid #E7E8EB;border-radius:14px;padding:26px">
+      <div style="font-size:17px;font-weight:700;color:#A4A7B0;margin-bottom:12px">워크플로우 구조 / 파이프라인</div>
+      <p style="font-size:20px;font-weight:500;line-height:1.6;color:#40414B;margin:0">/analyze(데이터 품질·기초 패턴) → /insight(유사도 기준 설계) → /generate(리포트 생성) → /review(자가 점검) 4단계를, scripts/pipeline.py 하나로 통합해 재현성 확보</p>
+    </div>
+    <div style="background:#F9F9FA;border:1px solid #E7E8EB;border-radius:14px;padding:26px">
+      <div style="font-size:17px;font-weight:700;color:#A4A7B0;margin-bottom:12px">사용 도구 &amp; 주요 브랜드</div>
+      <p style="font-size:20px;font-weight:500;line-height:1.6;color:#40414B;margin:0">Claude(진단·리포트 생성, 배포 오류 분석) · Python/pandas·scipy(통계 검증: ANOVA·t-test·상관분석) · Streamlit(배포) · GitHub(버전관리)</p>
+    </div>
+    <div style="background:#F9F9FA;border:1px solid #E7E8EB;border-radius:14px;padding:26px">
+      <div style="font-size:17px;font-weight:700;color:#A4A7B0;margin-bottom:12px">데이터 처리 과정</div>
+      <p style="font-size:20px;font-weight:500;line-height:1.6;color:#40414B;margin:0">과거 콘텐츠 70건 CSV → 5개 변수 통계 검증(유의성·효과크기) → 가중치 재설계(topic_category η²=0.006으로 가중치 0) → 유사도 매칭 → CTR 범위 진단 → md 리포트 + 대시보드 출력</p>
+    </div>
+    <div style="background:#F9F9FA;border:1px solid #E7E8EB;border-radius:14px;padding:26px">
+      <div style="font-size:17px;font-weight:700;color:#A4A7B0;margin-bottom:12px">추가 테스트 &amp; 트러블슈팅 기록</div>
+      <p style="font-size:19px;font-weight:500;line-height:1.55;color:#40414B;margin:0">극단 더미 데이터(특정 유형 2건)로 스트레스 테스트 → 후보 부족 시 콘텐츠 유형까지 완화되어 블로그·숏폼이 혼합 비교되는 버그 발견·수정. 배포 시 4가지 연쇄 오류(브라우저 자동번역 DOM 붕괴 / pandas 3.0.3·Streamlit pandas&lt;3 충돌 / 한글·특수문자 경로 오인식 / Python 3.14 wheel 부재) → 진입점을 특수문자 없는 루트로 이동 + Python 3.12 명시로 해결</p>
+    </div>
+  </div>
+</section></div></div>
+
+</div>
+<script>
+  function fitDeck(){
+    document.querySelectorAll('.frame').forEach(function(f){
+      var s = f.clientWidth / 1920;
+      f.querySelector('.scale').style.transform = 'scale(' + s + ')';
+      f.style.height = (1080 * s) + 'px';
+    });
+  }
+  window.addEventListener('resize', fitDeck);
+  fitDeck();
+</script>
+</body>
+</html>
