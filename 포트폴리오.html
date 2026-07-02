@@ -1,0 +1,783 @@
+<title>콘텐츠 성과 예측기 — 채용 포트폴리오</title>
+<style>
+  :root {
+    --paper: #EEF0E9;
+    --surface: #FBFBF7;
+    --ink: #191C16;
+    --ink-soft: #565C4E;
+    --ink-faint: #8B9184;
+    --gold: #B96F1F;
+    --gold-soft: #E9C08C;
+    --steel: #4F6B7C;
+    --steel-soft: #C4D3D9;
+    --line: #DADDD0;
+    --line-strong: #C3C7B7;
+    --serif: Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
+    --sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+      "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--gold); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  a:focus-visible, button:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+  }
+
+  .page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 64px 24px 120px;
+  }
+
+  /* ---------- Header ---------- */
+
+  header.hero {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    padding-bottom: 48px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 56px;
+  }
+
+  .eyebrow {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  h1.title {
+    font-family: var(--sans);
+    font-weight: 800;
+    font-size: 34px;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    margin: 0;
+    color: var(--ink);
+  }
+
+  h1.title em {
+    font-style: normal;
+    color: var(--gold);
+  }
+
+  .subhead {
+    font-size: 17px;
+    color: var(--ink-soft);
+    max-width: 60ch;
+  }
+
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 10px;
+  }
+
+  .meta-chip {
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    color: var(--ink-soft);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px 12px;
+  }
+
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+    margin-top: 6px;
+  }
+
+  .cta-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--ink);
+    color: var(--surface);
+    font-weight: 700;
+    font-size: 14.5px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+  }
+  .cta-primary:hover { background: var(--gold); color: var(--ink); }
+
+  .cta-note { font-size: 13.5px; color: var(--ink-faint); }
+
+  /* ---------- Section scaffolding ---------- */
+
+  section.block {
+    padding: 52px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  section.block:last-of-type { border-bottom: none; }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+
+  .section-index {
+    font-family: var(--serif);
+    font-size: 15px;
+    color: var(--gold);
+    border: 1px solid var(--gold-soft);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    font-variant-numeric: tabular-nums;
+  }
+
+  h2.section-title {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .section-kicker {
+    font-size: 14px;
+    color: var(--ink-faint);
+    margin: -12px 0 20px 42px;
+  }
+
+  p { margin: 0 0 16px; max-width: 62ch; }
+  .block > p:last-child { margin-bottom: 0; }
+
+  ul.plain { margin: 0 0 16px; padding-left: 20px; max-width: 62ch; }
+  ul.plain li { margin-bottom: 8px; }
+
+  /* ---------- Quote / verbatim ---------- */
+
+  blockquote.verbatim {
+    margin: 0 0 20px;
+    padding: 16px 20px;
+    background: var(--surface);
+    border-left: 3px solid var(--steel);
+    border-radius: 0 6px 6px 0;
+    color: var(--ink-soft);
+    font-size: 15.5px;
+    line-height: 1.7;
+  }
+  blockquote.verbatim cite {
+    display: block;
+    margin-top: 8px;
+    font-style: normal;
+    font-size: 12.5px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  /* ---------- Stat callouts ---------- */
+
+  .stat-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin: 24px 0;
+  }
+
+  .stat-card {
+    flex: 1 1 200px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px 20px;
+  }
+
+  .stat-value {
+    font-family: var(--serif);
+    font-size: 32px;
+    font-variant-numeric: tabular-nums;
+    color: var(--gold);
+    line-height: 1.1;
+  }
+
+  .stat-value.steel { color: var(--steel); }
+
+  .stat-label {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-top: 6px;
+  }
+
+  /* ---------- Decision cards ---------- */
+
+  .decision {
+    display: grid;
+    grid-template-columns: 108px 1fr;
+    gap: 4px 18px;
+    padding: 16px 0;
+    border-top: 1px solid var(--line);
+  }
+  .decision:last-child { padding-bottom: 0; }
+  .decision-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--steel);
+    padding-top: 2px;
+  }
+  .decision-body strong { display: block; margin-bottom: 4px; font-size: 15.5px; }
+  .decision-body span { color: var(--ink-soft); font-size: 14.5px; }
+
+  /* ---------- Flow ---------- */
+
+  ol.flow {
+    list-style: none;
+    margin: 0 0 20px;
+    padding: 0;
+    counter-reset: flow;
+  }
+  ol.flow li {
+    counter-increment: flow;
+    position: relative;
+    padding: 0 0 18px 40px;
+    border-left: 1px dashed var(--line-strong);
+    margin-left: 13px;
+  }
+  ol.flow li:last-child { border-left-color: transparent; padding-bottom: 0; }
+  ol.flow li::before {
+    content: counter(flow);
+    position: absolute;
+    left: -13px;
+    top: -1px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--surface);
+    font-size: 12.5px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-variant-numeric: tabular-nums;
+  }
+  ol.flow strong { font-size: 15.5px; }
+  ol.flow p { margin: 4px 0 0; font-size: 14.5px; color: var(--ink-soft); }
+
+  /* ---------- Charts (CSS bars) ---------- */
+
+  .chart {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 20px 22px 16px;
+    margin: 20px 0;
+  }
+  .chart-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 14px;
+  }
+  .bar-row {
+    display: grid;
+    grid-template-columns: 52px 1fr 56px;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .bar-row:last-child { margin-bottom: 0; }
+  .bar-tag {
+    font-size: 13px;
+    color: var(--ink-soft);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .bar-track {
+    background: var(--paper);
+    border-radius: 5px;
+    height: 16px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 5px;
+    background: var(--steel);
+  }
+  .bar-fill.hi { background: var(--gold); }
+  .bar-num {
+    font-family: var(--serif);
+    font-size: 14.5px;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+
+  /* ---------- Tables ---------- */
+
+  .table-wrap { overflow-x: auto; margin: 20px 0; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14.5px;
+    min-width: 480px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+    font-variant-numeric: tabular-nums;
+  }
+  th {
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 700;
+    border-bottom: 1px solid var(--line-strong);
+  }
+  td.num { color: var(--ink); }
+  tr:last-child td { border-bottom: none; }
+  .tag-gold { color: var(--gold); font-weight: 700; }
+  .tag-steel { color: var(--steel); }
+
+  /* ---------- Demo card ---------- */
+
+  .demo-card {
+    background: var(--ink);
+    color: var(--surface);
+    border-radius: 12px;
+    padding: 26px 26px 22px;
+    margin: 22px 0;
+  }
+  .demo-card .k { color: var(--gold-soft); font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
+  .demo-card .v { font-size: 15px; margin: 4px 0 16px; }
+  .demo-card .v:last-of-type { margin-bottom: 0; }
+  .demo-out {
+    background: rgba(251,251,247,0.06);
+    border: 1px solid rgba(251,251,247,0.14);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 14.5px;
+    line-height: 1.6;
+  }
+  .demo-out .range {
+    font-family: var(--serif);
+    font-size: 22px;
+    color: var(--gold-soft);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---------- Callout / limits ---------- */
+
+  .callout {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--ink-faint);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    font-size: 14.5px;
+    color: var(--ink-soft);
+    margin: 20px 0;
+  }
+
+  /* ---------- Appendix ---------- */
+
+  details.appendix {
+    background: #E7E9DE;
+    border: 1px solid var(--line-strong);
+    border-radius: 12px;
+    padding: 4px 22px;
+    margin-top: 8px;
+  }
+  details.appendix[open] { padding-bottom: 22px; }
+  details.appendix summary {
+    cursor: pointer;
+    padding: 18px 0;
+    font-weight: 700;
+    font-size: 15px;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  details.appendix summary::-webkit-details-marker { display: none; }
+  details.appendix summary::before {
+    content: "+";
+    font-family: var(--serif);
+    font-size: 18px;
+    color: var(--gold);
+    width: 20px;
+  }
+  details.appendix[open] summary::before { content: "–"; }
+  details.appendix h4 {
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    margin: 18px 0 8px;
+  }
+  details.appendix p, details.appendix li { font-size: 14px; color: var(--ink-soft); }
+  details.appendix code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    background: rgba(0,0,0,0.06);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+
+  footer {
+    margin-top: 48px;
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--ink-faint);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  @media (max-width: 560px) {
+    h1.title { font-size: 27px; }
+    .section-kicker { margin-left: 0; }
+    .decision { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="page">
+
+  <header class="hero">
+    <div class="eyebrow">AX 해커톤 · 마케팅 트랙 · 개인 과제 · 작업시간 3시간</div>
+    <h1 class="title">발행 전 "이거 올리면 반응 어떨까"를,<br /><em>감이 아니라 데이터</em>로 진단하게 만들었다</h1>
+    <p class="subhead">
+      신규 콘텐츠 정보를 넣으면 과거 콘텐츠 중 가장 비슷한 3건의 실제 성과로 예상 CTR 범위를 제시하고,
+      실제로 차이 났던 요소를 근거로 개선안 2가지를 만들어주는 진단 절차를 설계했습니다.
+    </p>
+    <div class="meta-row">
+      <span class="meta-chip">과거 성과 69건(중복 1건 제외) → 신규 5건 진단</span>
+      <span class="meta-chip">ML 예측 아님 · 실측 패턴 기반 진단</span>
+    </div>
+    <div class="cta-row">
+      <a class="cta-primary" href="https://spartahackathon-hk968rlpf6smau7aewypxy.streamlit.app/" target="_blank" rel="noopener">
+        실제 리포트 데모 보기 →
+      </a>
+      <span class="cta-note">30초면 전체 화면이 뜹니다. 아래 3절에 실제 입출력 예시가 있습니다.</span>
+    </div>
+  </header>
+
+  <!-- 1. Executive Summary -->
+  <section class="block">
+    <div class="section-head">
+      <span class="section-index">1</span>
+      <h2 class="section-title">한 장 요약</h2>
+    </div>
+    <div class="section-kicker">가장 바쁜 담당자가 이 칸만 읽어도 되도록</div>
+
+    <blockquote class="verbatim">
+      "마케터는 콘텐츠 발행 직전 늘 '이거 올리면 반응이 어떨까?'를 고민합니다. 발행 전 반응 예측을 감(感)에 의존하고,
+      과거 성과 데이터가 있어도 패턴을 분석해 적용하기가 번거롭습니다. A/B 테스트는 발행 후 비교라 발행 전 방향
+      검증 수단이 없어 실패할 콘텐츠를 그대로 발행합니다. 유사 콘텐츠를 찾아 벤치마크하는 일을 매번 수동으로 합니다."
+      <cite>과제 원문 그대로 인용</cite>
+    </blockquote>
+
+    <p>
+      만든 것: <strong>신규 콘텐츠 5건을 넣으면, 과거 데이터 안에서 가장 비슷한 콘텐츠를 자동으로 찾아 비교하고
+      예상 성과 범위 + 데이터 근거 있는 개선안까지 만들어주는 진단 절차</strong>를 설계하고, 다른 콘텐츠 목록을
+      넣어도 같은 품질로 재현되는지 검증했습니다.
+    </p>
+
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-value">+1.48<span style="font-size:18px;">%p</span></div>
+        <div class="stat-label">발행 시간대를 8시→20시로 옮겼을 때 CTR 차이 — 5개 비교 요소 중 영향력 최대</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">+1.06<span style="font-size:18px;">%p</span></div>
+        <div class="stat-label">제목에 이모지를 넣었을 때 CTR 차이</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value steel">46.4%</div>
+        <div class="stat-label">저성과 시간대(8·12시)에 발행되고 있는 콘텐츠 비중</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. 문제 이해 -->
+  <section class="block">
+    <div class="section-head">
+      <span class="section-index">2</span>
+      <h2 class="section-title">문제를 어떻게 이해했나</h2>
+    </div>
+    <div class="section-kicker">문제를 되먹이는 것이 아니라, 내 언어로 다시 세우기</div>
+
+    <p>
+      과제는 특정 기업에 종속되지 않은 마케터 직무 공통 시나리오입니다. 인스타그램·블로그·유튜브에
+      카드뉴스·숏폼·블로그·인포그래픽을 발행하고, CTR과 인게이지먼트율로 성과를 측정하는 환경을 가정합니다.
+      이 안에서 제가 진짜 체크포인트로 삼은 지점은 다음 세 가지였습니다.
+    </p>
+
+    <ul class="plain">
+      <li><strong>벤치마킹은 항상 수동이다.</strong> 발행 전마다 "예전에 비슷한 거 뭐 있었지"를 사람이 직접 뒤져야 함.</li>
+      <li><strong>발행 전 검증 수단이 없다.</strong> A/B 테스트는 발행 후 비교라, 저성과가 예상되는 콘텐츠를 걸러낼 방법이 없음.</li>
+      <li><strong>근거가 매번 감(感)이다.</strong> 시간대·이모지·포맷 선택이 데이터 없이 담당자 경험으로 반복됨.</li>
+    </ul>
+
+    <div class="callout">
+      <strong>이번에 의도적으로 풀지 않은 것</strong> — 과거 성과 데이터는 70건뿐입니다. 이 규모에서 학습 기반
+      예측 모델을 만들면 과적합 위험이 훨씬 큽니다. 그래서 "예측 모델"이 아니라 "유사 콘텐츠의 실제 과거 성과로
+      기대 범위를 제시하는 패턴 진단"으로 문제 자체를 좁혔습니다. 데이터 규모에 맞는 방법을 고르는 것도
+      판단의 일부라고 생각했습니다.
+    </div>
+  </section>
+
+  <!-- 3. 해결 접근 -->
+  <section class="block">
+    <div class="section-head">
+      <span class="section-index">3</span>
+      <h2 class="section-title">어떻게 풀었나 — 접근과 판단</h2>
+    </div>
+    <div class="section-kicker">결과보다 재현 가능한 사고 과정</div>
+
+    <p><strong>핵심 가설</strong> — "형식과 채널이 같고, 시간대·이모지까지 비슷한 과거 콘텐츠의 실제 성과가
+    감보다 훨씬 나은 기준선이 된다."</p>
+
+    <p><strong>진단 절차 (사람이 실제로 따라가는 순서)</strong></p>
+    <ol class="flow">
+      <li>
+        <strong>형식·채널이 같은 과거 콘텐츠만 후보로 좁힌다</strong>
+        <p>카드뉴스와 숏폼처럼 소비 방식 자체가 다른 콘텐츠는 처음부터 비교 대상에서 제외합니다.</p>
+      </li>
+      <li>
+        <strong>그 안에서 발행 시간대·이모지 여부까지 맞는 콘텐츠를 우선 정렬한다</strong>
+        <p>두 요소는 실제로 CTR 차이가 검증된 축이라, 맞을수록 더 신뢰도 높은 비교 대상으로 취급합니다.</p>
+      </li>
+      <li>
+        <strong>가장 비슷한 3건의 실제 성과로 예상 CTR 범위를 제시한다</strong>
+        <p>추정이 아니라 실제로 발행됐던 콘텐츠의 실측치를 그대로 보여줍니다.</p>
+      </li>
+      <li>
+        <strong>과거 데이터에서 실제로 차이 났던 요소로 개선안 2가지를 만든다</strong>
+        <p>표본이 작거나 근거가 약하면 "참고용"이라고 리포트에 그대로 표시합니다.</p>
+      </li>
+      <li>
+        <strong>(옵션) 팀 전체 발행 습관까지 훑어 구조적 문제를 우선순위와 함께 제안한다</strong>
+        <p>개별 콘텐츠 진단과 별개로, 반복되는 팀 차원 문제를 영향력 × 실행 난이도로 줄 세웁니다.</p>
+      </li>
+    </ol>
+
+    <p><strong>진행하며 내린 판단들 — 무엇을 버렸고 왜</strong></p>
+
+    <div class="decision">
+      <div class="decision-label">기각</div>
+      <div class="decision-body">
+        <strong>주제 카테고리를 유사도 기준에서 뺐다</strong>
+        <span>처음엔 넣었지만, 검증해보니 성과와 통계적으로 무관하다는 게 확인돼 점수에서 제외했습니다. 근거가
+        무너지면 이미 짜둔 채점 기준도 스스로 고쳤습니다.</span>
+      </div>
+    </div>
+    <div class="decision">
+      <div class="decision-label">기각</div>
+      <div class="decision-body">
+        <strong>조건을 끝까지 완화하는 방식을 버렸다</strong>
+        <span>일부러 극단적인 가짜 데이터로 스트레스 테스트를 해봤더니, 후보가 부족하다고 조건을 계속 풀면
+        블로그와 숏폼처럼 완전히 다른 형식이 섞여 비교되는 오류가 났습니다. 형식·채널만은 끝까지 고정하기로
+        원칙을 바꿨습니다.</span>
+      </div>
+    </div>
+    <div class="decision">
+      <div class="decision-label">채택</div>
+      <div class="decision-body">
+        <strong>팀 전략 우선순위는 곱셈으로 계산했다</strong>
+        <span>영향력이 커도 실행이 극히 어렵다면 지금 당장 순위는 낮아야 한다고 봤습니다. 덧셈은 한쪽이 낮아도
+        다른 쪽으로 상쇄돼 우선순위를 부풀릴 위험이 있어 곱셈을 택했습니다.</span>
+      </div>
+    </div>
+
+    <p style="margin-top:24px;"><strong>AI와 직접 판단의 분업</strong> — 반복적인 후보 비교·수치 계산·문서
+    재작성은 자동화에 맡겼고, "무엇을 비교 기준으로 인정할지" "근거가 통계적으로 실재하는지" "우선순위를
+    어떤 규칙으로 매길지" 같은 판단은 전부 직접 세우고 직접 검증했습니다.</p>
+  </section>
+
+  <!-- 4. 산출물 & 증빙 -->
+  <section class="block">
+    <div class="section-head">
+      <span class="section-index">4</span>
+      <h2 class="section-title">실제로 돌아가는 것</h2>
+    </div>
+    <div class="section-kicker">신규 콘텐츠 1건이 들어가서 나오는 실제 결과</div>
+
+    <div class="demo-card">
+      <div class="k">입력 — 신규 콘텐츠 ①</div>
+      <div class="v">숏폼 · 커리어 · 유튜브 채널 · 20시 발행 · 제목에 이모지 있음 · 제목 15자</div>
+      <div class="k">진단 결과</div>
+      <div class="demo-out">
+        <div class="range">예상 CTR 4.3% ~ 5.8%</div>
+        <div style="margin-top:10px;">과거 13건의 후보 중 조건이 가장 잘 맞는 3건(퇴근 후 루틴 콘텐츠·주니어
+        성장기 콘텐츠·이직 후기 콘텐츠)의 실제 성과를 근거로 제시. 시간대·이모지·형식×채널 조합이 이미 전체
+        데이터 기준 최적 구간이라, <strong>그대로 발행해도 무방하다</strong>는 코멘트가 함께 나옵니다.</div>
+      </div>
+    </div>
+
+    <p>신규 5건 전체에 대해 같은 방식으로 예상 CTR 범위·유사 콘텐츠 TOP3 비교표·개선안 2가지가 담긴 진단
+    리포트가 만들어졌습니다. 그중 1건(①)의 TOP3 비교표는 이렇습니다.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>순위</th><th>제목</th><th>CTR</th><th>인게이지먼트율</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>퇴근 후 5분 루틴으로 인생 바뀜</td><td class="num tag-gold">5.8%</td><td class="num">9.2%</td></tr>
+          <tr><td>2</td><td>주니어 마케터가 3개월 만에 한 일</td><td class="num">5.2%</td><td class="num">8.7%</td></tr>
+          <tr><td>3</td><td>이직 6개월 차 솔직 후기</td><td class="num">4.3%</td><td class="num">8.9%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>같은 절차를 완전히 다른 신규 콘텐츠 목록에 돌려도 동일한 단계(정제 → 유사 TOP3 → 범위 → 개선안 →
+    리포트)로 재현되는지 별도 데이터로 검증했고, 형식이 극단적으로 희소한 가짜 데이터로도 스트레스 테스트를
+    거쳤습니다. 무엇을 어떻게 자동화했는지의 기술적 구조는 맨 아래 부록에 정리했습니다.</p>
+  </section>
+
+  <!-- 5. 임팩트 -->
+  <section class="block">
+    <div class="section-head">
+      <span class="section-index">5</span>
+      <h2 class="section-title">그래서 뭐가 달라지나</h2>
+    </div>
+    <div class="section-kicker">Before / After, 그리고 발견한 수치</div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>항목</th><th>Before</th><th>After</th></tr></thead>
+        <tbody>
+          <tr><td>콘텐츠 벤치마킹</td><td>담당자가 그때그때 과거 게시물을 직접 훑어보며 감으로 비교</td><td>조건을 넣으면 과거 69건 중 가장 비슷한 3건이 자동 정렬</td></tr>
+          <tr><td>발행 전 검증</td><td>발행 후 A/B 비교만 가능, 발행 전 방향 검증 수단 없음</td><td>발행 전 예상 CTR 범위 제시</td></tr>
+          <tr><td>개선 근거</td><td>"이렇게 하면 좋을 것 같다"는 경험적 판단</td><td>실제 CTR 차이 수치(%p)가 붙은 제안 2건</td></tr>
+          <tr><td>재현성</td><td>새 콘텐츠가 들어올 때마다 처음부터 다시 판단</td><td>다른 신규 콘텐츠 목록을 넣어도 동일 절차로 자동 재현</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="chart">
+      <div class="chart-title">발행 시간대별 평균 CTR (과거 69건)</div>
+      <div class="bar-row"><span class="bar-tag">8시</span><div class="bar-track"><div class="bar-fill" style="width:66%;"></div></div><span class="bar-num">2.88%</span></div>
+      <div class="bar-row"><span class="bar-tag">12시</span><div class="bar-track"><div class="bar-fill" style="width:72%;"></div></div><span class="bar-num">3.13%</span></div>
+      <div class="bar-row"><span class="bar-tag">18시</span><div class="bar-track"><div class="bar-fill hi" style="width:89%;"></div></div><span class="bar-num">3.90%</span></div>
+      <div class="bar-row"><span class="bar-tag">20시</span><div class="bar-track"><div class="bar-fill hi" style="width:100%;"></div></div><span class="bar-num">4.36%</span></div>
+    </div>
+
+    <div class="chart">
+      <div class="chart-title">제목 이모지 유무별 평균 CTR (과거 69건)</div>
+      <div class="bar-row"><span class="bar-tag">미포함</span><div class="bar-track"><div class="bar-fill" style="width:74%;"></div></div><span class="bar-num">2.95%</span></div>
+      <div class="bar-row"><span class="bar-tag">포함</span><div class="bar-track"><div class="bar-fill hi" style="width:100%;"></div></div><span class="bar-num">4.01%</span></div>
+    </div>
+
+    <p>팀 전체로 보면, 콘텐츠의 <strong>46.4%(32/69건)</strong>가 저성과 시간대(8·12시)에, <strong>37.7%(26/69건)</strong>가
+    이모지 없이 발행되고 있었습니다. 이 두 습관만 바꿔도 발행 일정·체크리스트 조정만으로 개선 여지가 있다고
+    보고, 우선순위 25점·20점(임팩트 × 실행 난이도, 25점 만점)짜리 전략 제안 2건으로 정리했습니다.</p>
+
+    <div class="callout">
+      위 수치는 과거 실제 발행 콘텐츠의 관찰치이며, 인과관계를 실험으로 증명한 값이 아닙니다. 표본이 작은
+      항목(예: 특정 조합 내 n=1 비교)은 리포트에 "참고용"이라고 별도로 표시해뒀습니다. 과장하지 않는 것이
+      신뢰의 전제라고 생각합니다.
+    </div>
+  </section>
+
+  <!-- 6. 적용 가능성 & 한계 -->
+  <section class="block">
+    <div class="section-head">
+      <span class="section-index">6</span>
+      <h2 class="section-title">우리 팀에 적용한다면 · 한계 · 다음 단계</h2>
+    </div>
+    <div class="section-kicker">낙관보다 정직한 스코프</div>
+
+    <p><strong>적용에 필요한 것</strong> — 발행 콘텐츠의 형식·채널·발행 시간·이모지 여부 같은 메타데이터와,
+    CTR·인게이지먼트 실적 데이터만 있으면 동일한 구조로 재현할 수 있습니다. 특정 CMS나 툴에 묶여있지
+    않습니다.</p>
+
+    <p><strong>스스로 인정하는 한계</strong></p>
+    <ul class="plain">
+      <li>과거 데이터가 69건뿐이라 일부 비교(소표본 축)는 확정적 근거로 보지 않고 참고용으로만 표기했습니다.</li>
+      <li>학습 기반 예측 모델은 이 데이터 규모에서 과적합 위험이 커서 의도적으로 배제했습니다.</li>
+      <li>제목 길이 같은 일부 업계 통설은 자사 데이터로 검증할 사례 자체가 없어(n=0), 개선 제안의 근거로
+      쓰지 않고 참고 정보로만 남겼습니다.</li>
+    </ul>
+
+    <p><strong>2주가 더 주어진다면</strong> — 실제로 발행한 뒤의 실측 CTR을 다시 입력해, 이 진단이 제시한
+    예상 범위와 실제 결과의 오차를 스스로 검증하는 피드백 루프를 추가하고 싶습니다. 데이터가 쌓이면 지금
+    참고용으로만 남긴 소표본 항목들도 다시 검증할 수 있습니다.</p>
+  </section>
+
+  <!-- 7. 마무리 -->
+  <section class="block">
+    <div class="section-head">
+      <span class="section-index">7</span>
+      <h2 class="section-title">이 문제를 계속 맡는다면</h2>
+    </div>
+
+    <p>발행 전 진단과 발행 후 재검증이 맞물리는 상시 루틴까지 확장할 수 있다고 봅니다. 지금은 한 번의 진단
+    절차지만, 데이터가 쌓일수록 같은 구조 위에서 근거가 더 촘촘해지는 방식으로 만들었습니다.</p>
+
+    <p style="color: var(--ink-soft); font-size: 14.5px;">이번 결과물에서 제가 실제로 일한 방식 — 가설을
+    세우고, 직접 통계로 검증하고, 근거가 무너지면 이미 짜둔 채점 기준도 스스로 고치는 것 — 은 이 문서 전체에
+    그대로 기록돼 있습니다.</p>
+
+    <details class="appendix">
+      <summary>기술 상세 — 알고리즘·검증 방법 (기술 리뷰어용)</summary>
+
+      <h4>작업 절차</h4>
+      <p>데이터 파악(결측·중복·성과 패턴 확인) → 유사도 기준 설계 → 리포트 생성 → 제출 전 자가 점검, 총 4단계로
+      진행했고 각 단계의 판단 근거는 전부 별도 로그로 기록했습니다.</p>
+
+      <h4>유사도 알고리즘</h4>
+      <p><strong>앵커(필수, 완화하지 않음)</strong>: 형식(<code>type</code>) + 채널(<code>channel</code>) 동시 일치.
+      <strong>서브 점수(앵커 안에서 정렬용, 3점 만점)</strong>: 발행 시간대 일치 +2점, 이모지 일치 +1점.
+      동점 시 <code>content_id</code> 오름차순으로 결정론적 정렬해 재현성을 확보했습니다. 후보가 3건 미만이면
+      채널만 완화하고, 형식은 원칙적으로 끝까지 완화하지 않습니다.</p>
+
+      <h4>통계 검증</h4>
+      <p>일원배치 분산분석(ANOVA)과 Welch t-검정으로 각 축이 CTR과 실제로 유의미한 관계가 있는지 확인했습니다.
+      발행 시간대(η²=0.48)·이모지(Welch t=6.12)·형식·채널은 모두 유의했고, 주제 카테고리(η²=0.006)는 유의하지
+      않아 서브 점수에서 제외했습니다. CTR과 인게이지먼트율의 상관관계도 별도로 확인했습니다(r=0.89).</p>
+
+      <h4>재현성 검증</h4>
+      <p>다른 신규 콘텐츠 목록으로도 동일 절차가 재현되는지 확인했고, 특정 형식이 2건뿐인 극단적인 가짜 데이터로
+      스트레스 테스트를 진행해 조건 완화 로직의 버그(형식이 다른 콘텐츠가 섞여 비교되는 문제)를 발견·수정했습니다.</p>
+
+      <h4>전략 우선순위 로직</h4>
+      <p>우선순위 점수 = 임팩트(1~5) × 실행 난이도(1~5), 25점 만점. 해당 축이 통계적으로 유의하지 않으면
+      효과 크기와 무관하게 임팩트를 최저점으로 고정하도록 규칙화해, 근거가 약한 후보가 자동으로 후순위로
+      밀리게 만들었습니다.</p>
+
+      <h4>참고 링크</h4>
+      <p>데모: <a href="https://spartahackathon-hk968rlpf6smau7aewypxy.streamlit.app/" target="_blank" rel="noopener">스트림릿 대시보드</a></p>
+    </details>
+  </section>
+
+  <footer>
+    <span>AX 해커톤 · [10] 마케팅 공통 트랙 결과물</span>
+    <span>이력·경력·자기소개는 별도 제출본 참고</span>
+  </footer>
+
+</div>
