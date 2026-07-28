@@ -1,7 +1,7 @@
 # AX 해커톤 — [10] 마케팅 공통: 콘텐츠 성과 예측기
 
-> **🔗 웹 대시보드 바로 보기: https://spartahackathon-hk968rlpf6smau7aewypxy.streamlit.app/**
-> 최종 통합 리포트(`sample-final.html`)를 Streamlit으로 배포한 버전입니다.
+> **🔗 웹 대시보드 바로 보기: https://spartahackathon-dzrj6unxpf2qhjno7eqcrl.streamlit.app/**
+> 신규 콘텐츠 진단·핵심 성과 패턴·reach 활용 검증·다변량 회귀분석·발행 전략 기획안을 탭으로 나눠 실시간으로 계산해 보여주는 Streamlit 앱입니다.
 
 > **모든 작업물은 [`[10] 마케팅 공통/`](./%5B10%5D%20%EB%A7%88%EC%BC%80%ED%8C%85%20%EA%B3%B5%ED%86%B5/) 폴더 안에 있습니다.**
 > 이 README는 저장소 루트 안내용이며, 실제 코드·데이터·리포트를 보려면 반드시 위 폴더로 들어가야 합니다.
@@ -98,12 +98,13 @@
 
 ```
 (저장소 루트)
-├── streamlit_app.py             # ★ HTML 대시보드(sample-final.html) 배포용 Streamlit 앱
-├── requirements.txt             # Streamlit 앱 전용 최소 의존성 (streamlit만 포함)
+├── streamlit_app.py             # ★ 대시보드 배포용 Streamlit 앱 (탭: 개요/신규 콘텐츠 진단/reach 분석/다변량 회귀분석/발행 전략 기획안)
+├── requirements.txt             # Streamlit 앱 배포 의존성 (streamlit·pandas·plotly·numpy·scipy·openpyxl)
+├── runtime.txt / .python-version  # 배포 환경 Python 버전 고정 (3.12 — 4절 참고)
 └── [10] 마케팅 공통/             # 아래 참고 — 실제 과제 코드·데이터·리포트는 전부 이 안에 있음
 ```
 
-> `streamlit_app.py`·`requirements.txt`가 저장소 루트에 있는 이유: Streamlit Community Cloud의 의존성 설치 로직이 `[10] 마케팅 공통`처럼 대괄호·공백이 섞인 폴더명을 제대로 못 읽는 문제가 있어(패키지명으로 오인) 배포 진입점만 특수문자 없는 루트로 뺐습니다. `output/sample-final.html` 경로는 코드 안에서 문자열로 참조하므로 폴더 안에 그대로 둬도 문제없습니다. 또한 이 최소 `requirements.txt`는 미션 폴더의 `requirements.txt`(pandas 등 데이터 분석용, `pandas==3.0.3`)와 의도적으로 분리했습니다 — 함께 두면 streamlit이 요구하는 `pandas<3`과 충돌해 배포가 실패합니다.
+> `streamlit_app.py`·`requirements.txt`가 저장소 루트에 있는 이유: Streamlit Community Cloud의 의존성 설치 로직이 `[10] 마케팅 공통`처럼 대괄호·공백이 섞인 폴더명을 제대로 못 읽는 문제가 있어(패키지명으로 오인) 배포 진입점만 특수문자 없는 루트로 뺐습니다. 대신 `sys.path`에 `scripts/` 경로를 추가해 `pipeline.py`·`reach_analysis.py`·`regression_analysis.py`·`dashboard_native.py`를 그대로 import하므로, 루트 `requirements.txt`에는 이 스크립트들이 필요로 하는 `scipy`·`numpy`·`plotly`까지 포함돼 있습니다. 미션 폴더의 `requirements.txt`(`pandas==3.0.3`)와는 의도적으로 분리했습니다 — 함께 두면 streamlit이 요구하는 `pandas<3`과 충돌해 배포가 실패합니다. `runtime.txt`·`.python-version`으로 Python 3.12를 고정한 것도 배포 환경 제약 때문입니다 — Streamlit Cloud 기본 Python(3.14)에서는 streamlit이 의존하는 `pyarrow`의 사전 빌드 wheel이 아직 없어 소스 빌드가 실패합니다.
 
 ```
 [10] 마케팅 공통/
@@ -135,6 +136,10 @@
 │   ├── generate.py                #   3단계 초안: 신규 5건 TOP3·CTR 범위 계산
 │   ├── pipeline.py                #   ★ 최종 재사용 파이프라인 (Basic~Challenge 전체 재현)
 │   ├── challenge_screen.py        #   Challenge: 팀 차원 전략 후보 스크리닝
+│   ├── reach_analysis.py          #   (포트폴리오 확장) reach(도달수)가 CTR·참여율과 독립적 관계가 있는지 검증
+│   ├── regression_analysis.py     #   (포트폴리오 확장) 다변량 회귀·VIF·부분 F검정으로 type/channel 다중공선성 검증
+│   ├── data_loading.py            #   Streamlit 업로드 CSV/Excel 검증·정규화 (streamlit_app.py 전용)
+│   ├── dashboard_native.py        #   ★ Streamlit 대시보드 렌더러 (st.tabs·st.metric·plotly 차트)
 │   ├── _verify_gen_dummy.py       #   (검증 전용) 파이프라인 로직(fallback·결측 처리) 검증용 더미 데이터 생성기
 │   ├── _verify_loo_backtest.py    #   (검증 전용) topic_category 제외 효과 leave-one-out 백테스트
 │   └── _verify_domain_shift.py    #   (검증 전용) 도메인 시프트 더미데이터로 통계 검증 결과의 시변성 재현
@@ -156,14 +161,14 @@
 
 1. **웹 대시보드로 보기 (배포된 Streamlit 앱)**
 
-   👉 **https://spartahackathon-hk968rlpf6smau7aewypxy.streamlit.app/**
+   👉 **https://spartahackathon-dzrj6unxpf2qhjno7eqcrl.streamlit.app/**
 
    로컬에서 직접 띄워보려면:
    ```bash
    pip install -r requirements.txt
    streamlit run streamlit_app.py
    ```
-   (저장소 **루트**에서 실행 — [`streamlit_app.py`](./streamlit_app.py)와 [`requirements.txt`](./requirements.txt)가 루트에 있는 이유는 4절 참고). `streamlit_app.py`가 `[10] 마케팅 공통/output/sample-final.html`을 그대로 불러와 브라우저 대시보드로 띄웁니다.
+   (저장소 **루트**에서 실행 — [`streamlit_app.py`](./streamlit_app.py)와 [`requirements.txt`](./requirements.txt)가 루트에 있는 이유는 4절 참고). 정적 HTML을 띄우는 게 아니라 `data/`의 CSV를 그 자리에서 읽어 `pipeline.py`·`reach_analysis.py`·`regression_analysis.py`로 실시간 계산한 뒤 `dashboard_native.py`가 탭(개요/신규 콘텐츠 진단/reach 분석/다변량 회귀분석/발행 전략 기획안)으로 렌더링합니다 — 화면 상단 "데이터 교체" expander에서 CSV를 업로드하면 모든 탭이 그 데이터 기준으로 다시 계산됩니다.
 
 2. **파일만 빠르게 보기 (배포 없이)**
    - [`output/sample-final.html`](<./[10] 마케팅 공통/output/sample-final.html>)을 브라우저로 직접 열기 — 진단 결과·비교표·전략 기획안을 시각화한 최종 통합 리포트
