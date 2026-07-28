@@ -2,7 +2,6 @@ import pathlib
 import sys
 
 import streamlit as st
-import streamlit.components.v1 as components
 
 DATA_DIR = pathlib.Path(__file__).parent / "[10] 마케팅 공통" / "data"
 DEFAULT_PAST_PATH = DATA_DIR / "past_content_performance.csv"
@@ -12,34 +11,28 @@ SCRIPTS_DIR = pathlib.Path(__file__).parent / "[10] 마케팅 공통" / "scripts
 sys.path.insert(0, str(SCRIPTS_DIR))
 
 import pipeline  # noqa: E402
-import dashboard_html  # noqa: E402
+import dashboard_native  # noqa: E402
+import reach_analysis  # noqa: E402
+import regression_analysis  # noqa: E402
 from data_loading import DataValidationError, load_new, load_past  # noqa: E402
 
-st.set_page_config(page_title="콘텐츠 성과 예측 리포트", layout="wide")
+st.set_page_config(page_title="콘텐츠 성과 예측 대시보드", layout="wide")
 
 st.title("콘텐츠 성과 예측 대시보드")
-st.caption(
-    "저장소에 포함된 샘플 데이터로 대시보드가 바로 표시됩니다. 직접 데이터를 검토하려면 "
-    "왼쪽 사이드바에서 파일을 업로드해 교체하세요."
-)
 
-with st.sidebar:
-    st.header("데이터 업로드 (선택)")
-    st.caption("업로드하지 않으면 저장소의 샘플 데이터를 사용합니다.")
-    past_file = st.file_uploader("과거 콘텐츠 성과 데이터 (CSV/Excel)", type=["csv", "xlsx", "xls"], key="past")
-    new_file = st.file_uploader("신규 콘텐츠 정보 (CSV/Excel)", type=["csv", "xlsx", "xls"], key="new")
+with st.expander("데이터 교체 (선택) — 업로드하지 않으면 저장소의 샘플 데이터를 사용합니다"):
+    col1, col2 = st.columns(2)
+    with col1:
+        past_file = st.file_uploader("과거 콘텐츠 성과 데이터 (CSV/Excel)", type=["csv", "xlsx", "xls"], key="past")
+    with col2:
+        new_file = st.file_uploader("신규 콘텐츠 정보 (CSV/Excel)", type=["csv", "xlsx", "xls"], key="new")
     include_strategy = st.checkbox("전략 기획안 포함 (Challenge)", value=True)
-    st.markdown("---")
-    st.markdown(
+    st.caption(
         "**필수 컬럼**\n\n"
         "- 과거 데이터: `content_id, title, type, topic_category, channel, ctr, "
-        "posting_hour, has_emoji, headline_length` (`engagement_rate`는 있으면 함께 표시)\n"
+        "posting_hour, has_emoji, headline_length` (`engagement_rate`·`reach`는 있으면 함께 활용)\n"
         "- 신규 데이터: `title, type, topic_category, channel, posting_hour, has_emoji, headline_length`"
     )
-
-using_sample_data = not past_file or not new_file
-if using_sample_data:
-    st.info("샘플 데이터(`[10] 마케팅 공통/data/`)로 대시보드를 표시하고 있습니다. 업로드 시 즉시 교체됩니다.")
 
 try:
     past_df = load_past(past_file or DEFAULT_PAST_PATH)
@@ -56,17 +49,30 @@ if new_df.empty:
     st.stop()
 
 clean = past_df.drop_duplicates(subset="content_id", keep="first").copy()
+past_name = past_file.name if past_file else DEFAULT_PAST_PATH.name
+new_name = new_file.name if new_file else DEFAULT_NEW_PATH.name
+
+st.caption(f"현재 데이터: 학습 {past_name}({len(clean)}건) · 진단 {new_name}({len(new_df)}건)"
+           + ("" if past_file and new_file else " — 샘플 데이터"))
 
 results = [pipeline.diagnose_one(clean, row) for _, row in new_df.iterrows()]
 candidates = pipeline.detect_strategic_candidates(clean) if include_strategy else None
+reach_result = reach_analysis.compute(clean)
+regression_result = regression_analysis.compute(clean)
 
-html_doc = dashboard_html.render_dashboard_html(
-    clean,
-    new_df,
-    results,
-    candidates=candidates,
-    past_filename=past_file.name if past_file else DEFAULT_PAST_PATH.name,
-    new_filename=new_file.name if new_file else DEFAULT_NEW_PATH.name,
-)
+tab_names = ["개요", "신규 콘텐츠 진단", "reach 분석", "다변량 회귀분석"]
+if include_strategy:
+    tab_names.append("발행 전략 기획안")
+tabs = st.tabs(tab_names)
 
-components.html(html_doc, height=1400, scrolling=True)
+with tabs[0]:
+    dashboard_native.render_overview(clean, new_df, regression_result, include_strategy)
+with tabs[1]:
+    dashboard_native.render_diagnosis(results)
+with tabs[2]:
+    dashboard_native.render_reach(reach_result)
+with tabs[3]:
+    dashboard_native.render_regression(regression_result)
+if include_strategy:
+    with tabs[4]:
+        dashboard_native.render_strategy(candidates)

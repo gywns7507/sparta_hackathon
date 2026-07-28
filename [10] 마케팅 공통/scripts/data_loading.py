@@ -62,6 +62,10 @@ def load_past(uploaded_file):
         df["engagement_rate"] = pd.to_numeric(df["engagement_rate"], errors="coerce")
     else:
         df["engagement_rate"] = float("nan")
+    if "reach" in df.columns:
+        df["reach"] = pd.to_numeric(df["reach"], errors="coerce")
+    else:
+        df["reach"] = float("nan")
     if df["content_id"].isna().any():
         raise DataValidationError("과거 성과 데이터의 content_id에 빈 값이 있습니다.")
     return df
